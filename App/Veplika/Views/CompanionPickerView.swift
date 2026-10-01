@@ -10,8 +10,8 @@ struct CompanionPickerView: View {
             Backdrop(companion: Companion.find(focusID ?? store.companion.id))
                 .animation(.smooth(duration: 0.6), value: focusID)
             VStack(alignment: .leading, spacing: 8) {
-                Text(L.t("Choose your companion", "选择你的伙伴")).font(.largeTitle.bold()).padding(.horizontal, 24).padding(.top, 24)
-                Text(L.t("3D digital humans made with PINOC", "由 PINOC 生成的 3D 数字人")).font(.subheadline).foregroundStyle(.secondary).padding(.horizontal, 24)
+                Text(L.t("Choose your companion", "选择你的伙伴")).font(.largeTitle.bold()).foregroundStyle(DS.Palette.ink).padding(.horizontal, 24).padding(.top, 24)
+                Text(L.t("3D digital humans made with PINOC", "由 PINOC 生成的 3D 数字人")).font(.subheadline).foregroundStyle(DS.Palette.inkSoft).padding(.horizontal, 24)
                 Spacer(minLength: 0)
                 ScrollView(.horizontal) {
                     LazyHStack(spacing: 16) {
@@ -43,9 +43,9 @@ struct CompanionPickerView: View {
             .clipShape(.rect(cornerRadius: 24))
 
             VStack(spacing: 4) {
-                Text(c.name).font(.title2.bold())
-                Text(c.tagline).font(.subheadline.weight(.medium)).foregroundStyle(c.accent)
-                Text(c.personality).font(.footnote).foregroundStyle(.secondary).multilineTextAlignment(.center)
+                Text(c.name).font(.title2.bold()).foregroundStyle(DS.Palette.ink)
+                Text(c.tagline).font(.subheadline.weight(.medium)).foregroundStyle(DS.Palette.inkSoft)
+                Text(c.personality).font(.footnote).foregroundStyle(DS.Palette.inkSoft).multilineTextAlignment(.center)
             }
 
             Button {
@@ -53,6 +53,7 @@ struct CompanionPickerView: View {
                 onPicked()
             } label: {
                 Text(selected ? L.t("With you now", "正在陪伴你") : L.t("Chat with them", "和 Ta 聊聊")).frame(maxWidth: .infinity)
+                    .foregroundStyle(DS.Palette.ink)
             }
             .buttonStyle(.glassProminent)
             .tint(c.accent)

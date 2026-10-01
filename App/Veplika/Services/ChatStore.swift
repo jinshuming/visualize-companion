@@ -53,6 +53,7 @@ final class ChatStore {
     // MARK: Actions
 
     func select(_ new: Companion) {
+        debugLog("select \(new.id) (current \(companion.id))")
         guard new != companion else { return }
         task?.cancel()
         isTyping = false
@@ -91,6 +92,13 @@ final class ChatStore {
     /// If the chat is still just the opening line, restate it in the newly chosen language.
     func languageChanged() {
         if messages.count == 1, messages[0].role == .companion { seedGreeting(); save() }
+    }
+
+    /// Persist a new display name and refresh anything showing it.
+    func rename(_ name: String) {
+        CompanionNames.set(name, for: companion.id)
+        companion = Companion.find(companion.id)
+        languageChanged()
     }
 
     func clearHistory() {

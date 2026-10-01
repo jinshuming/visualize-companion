@@ -61,7 +61,7 @@ struct CallLayer: View {
                 Button(action: endCall) {
                     Image(systemName: "xmark")
                         .font(.system(size: 20, weight: .bold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(DS.Palette.onHangUp)
                         .frame(width: DS.Size.hangUpButton, height: DS.Size.hangUpButton)
                         .background(DS.Palette.hangUp, in: .circle)
                 }

@@ -11,6 +11,7 @@ struct RootView: View {
     @Environment(ChatStore.self) private var store
     @Environment(AvatarController.self) private var avatar
     @Environment(SpeechService.self) private var speech
+    @Environment(OnboardingStore.self) private var onboarding
 
     @State private var mode: AppMode = .chat
     @State private var call = CallSession()
@@ -27,7 +28,7 @@ struct RootView: View {
             if !thumbMode { bottomShade }
             stageStatus
 
-            if !thumbMode { Group {
+            if !thumbMode && onboarding.completed { Group {
                 switch mode {
                 case .chat:
                     ChatLayer(mode: $mode, draft: $draft, focus: $focused, showPicker: $showPicker,
@@ -44,9 +45,15 @@ struct RootView: View {
                 }
             } }
 
-            if !thumbMode { VStack { Wordmark().padding(.top, 14); Spacer() }.allowsHitTesting(false) }
+            if !onboarding.completed { OnboardingFlow().transition(.opacity) }
+
+            if !thumbMode && onboarding.completed { VStack { Wordmark().padding(.top, 14); Spacer() }.allowsHitTesting(false) }
         }
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(onboarding.completed ? .dark : .light)
+        .onChange(of: onboarding.completed) { _, done in
+            if done { avatar.setMode(mode.stageName) }
+        }
+        .onAppear { DS.audit() }
         .statusBarHidden(thumbMode)
         .animation(DS.Motion.glide, value: mode)
         .onAppear {
@@ -77,6 +84,19 @@ struct RootView: View {
             try? "done".write(to: state, atomically: true, encoding: .utf8)
         }
         .task {
+            // `-onboardingAuto`: fill answers + sample photo, generate, then finish. For scripted checks.
+            guard ProcessInfo.processInfo.arguments.contains("-onboardingAuto") else { return }
+            while avatar.status != .ready && avatar.status != .loaded { try? await Task.sleep(for: .milliseconds(200)) }
+            onboarding.answers = ["you": "female", "partner": "female", "personality": "gentle", "style": "sweet", "together": "talk"]
+            onboarding.photo = Companion.all.first?.thumbnail
+            await onboarding.generate(chat: store)
+            try? await Task.sleep(for: .seconds(2))
+            debugLog("auto: before finish store=\(store.companion.id) result=\(onboarding.result?.id ?? "nil")")
+            onboarding.finish(chat: store)
+            try? await Task.sleep(for: .seconds(1))
+            debugLog("auto: after finish store=\(store.companion.id) name=\(store.companion.name)")
+        }
+        .task {
             guard ProcessInfo.processInfo.arguments.contains("-perfProbe") else { return }
             while avatar.status != .loaded { try? await Task.sleep(for: .milliseconds(200)) }
             try? await Task.sleep(for: .seconds(2))
@@ -94,6 +114,7 @@ struct RootView: View {
         .sheet(isPresented: $showPicker) {
             CompanionPickerView(onPicked: { showPicker = false })
                 .presentationDetents([.large])
+                .preferredColorScheme(.light)
         }
         .sheet(isPresented: $showSettings) { SettingsView() }
         .alert(L.t("Microphone and Speech Access Needed", "需要麦克风与语音识别权限"), isPresented: .init(

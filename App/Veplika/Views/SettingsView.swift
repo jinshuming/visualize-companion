@@ -5,6 +5,7 @@ struct SettingsView: View {
     @Environment(SpeechService.self) private var speech
     @Environment(\.dismiss) private var dismiss
     @Environment(AvatarController.self) private var avatar
+    @Environment(OnboardingStore.self) private var onboarding
     @AppStorage("diagnostics") private var diagnostics = false
     @State private var confirmClear = false
 
@@ -32,6 +33,9 @@ struct SettingsView: View {
                         confirmClear = true
                     }
                 }
+                Section {
+                    Button(L.t("Create a new companion", "创建新的伴侣")) { onboarding.restart(); dismiss() }
+                }
                 Section(L.t("About", "关于")) {
                     LabeledContent(L.t("Chat engine", "对话引擎"), value: L.t("Local mock", "本地 Mock"))
                     LabeledContent(L.t("Character rendering", "角色渲染"), value: "PINOC · Gaussian Splat")
@@ -39,6 +43,7 @@ struct SettingsView: View {
                         .onChange(of: diagnostics) { _, on in avatar.setDebug(on) }
                 }
             }
+            .tint(DS.Palette.brand)
             .navigationTitle(L.t("Settings", "设置"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button(L.t("Done", "完成")) { dismiss() } } }

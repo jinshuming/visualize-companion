@@ -5,6 +5,7 @@ struct VeplikaApp: App {
     @State private var store = ChatStore()
     @State private var avatar = AvatarController()
     @State private var speech = SpeechService()
+    @State private var onboarding = OnboardingStore()
 
     var body: some Scene {
         WindowGroup {
@@ -12,6 +13,7 @@ struct VeplikaApp: App {
                 .environment(store)
                 .environment(avatar)
                 .environment(speech)
+                .environment(onboarding)
         }
     }
 }
