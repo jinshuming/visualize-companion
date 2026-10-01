@@ -4,6 +4,8 @@ struct SettingsView: View {
     @Environment(ChatStore.self) private var store
     @Environment(SpeechService.self) private var speech
     @Environment(\.dismiss) private var dismiss
+    @Environment(AvatarController.self) private var avatar
+    @AppStorage("diagnostics") private var diagnostics = false
     @State private var confirmClear = false
 
     var body: some View {
@@ -33,6 +35,8 @@ struct SettingsView: View {
                 Section(L.t("About", "关于")) {
                     LabeledContent(L.t("Chat engine", "对话引擎"), value: L.t("Local mock", "本地 Mock"))
                     LabeledContent(L.t("Character rendering", "角色渲染"), value: "PINOC · Gaussian Splat")
+                    Toggle(L.t("Show render diagnostics", "显示渲染诊断"), isOn: $diagnostics)
+                        .onChange(of: diagnostics) { _, on in avatar.setDebug(on) }
                 }
             }
             .navigationTitle(L.t("Settings", "设置"))

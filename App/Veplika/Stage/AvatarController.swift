@@ -50,6 +50,7 @@ final class AvatarController: NSObject {
     func zoom(_ factor: Double) { run("window.stage.zoom(\(factor))") }
     func resetOrbit() { run("window.stage.resetOrbit()") }
     func nextTheme() { run("window.stage.nextTheme()") }
+    func setDebug(_ on: Bool) { run("window.stage.setDebug(\(on))") }
 
     func play(_ gesture: Gesture) {
         guard status == .loaded else { return }
@@ -79,6 +80,7 @@ final class AvatarController: NSObject {
         case "ready":
             engineReady = true
             status = .ready
+            if UserDefaults.standard.bool(forKey: "diagnostics") { setDebug(true) }
             run("window.stage.setMode('\(wantedMode)', true)")
             pushCompanion()
         case "loading": status = .loading
