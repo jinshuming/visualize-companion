@@ -13,6 +13,24 @@ const mark = (k) => { marks[k] = Math.round(performance.now() - T0); };
 let scene, app, character;
 
 // ---------------------------------------------------------------------------
+// Backend selection. Splats live in rgba32float textures sampled with a filtering sampler,
+// which WebGPU only allows when the adapter has `float32-filterable`. iPhones (and some
+// Android GPUs) expose WebGPU without it, so the character silently fails to draw while the
+// rest of the scene looks fine. Ask the adapter; never sniff the UA alone. iOS WebKit never
+// qualifies, so it short-circuits to WebGL2.
+// ---------------------------------------------------------------------------
+const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const probe = { hasNavGpu: !!navigator.gpu, float32Filterable: false, chose: 'webgl' };
+
+async function webgpuCanDrawSplats() {
+  if (isIOS || !navigator.gpu) return false;
+  try {
+    const adapter = await navigator.gpu.requestAdapter();
+    return !!adapter?.features.has('float32-filterable');
+  } catch { return false; }
+}
+
+// ---------------------------------------------------------------------------
 // Room themes. The default is Replika's lavender-grey studio with a sky window.
 // Colours were sampled from reference screenshots.
 // ---------------------------------------------------------------------------
@@ -234,7 +252,12 @@ function setTheme(i) {
 
 async function init() {
   const canvas = document.getElementById('canvas');
+  probe.float32Filterable = await webgpuCanDrawSplats();
+  probe.chose = probe.float32Filterable ? 'auto' : 'webgl';
   scene = await Scene.create(canvas, {
+    // Force WebGL2 unless WebGPU can really draw splats. Don't pass `gsplatRenderer`:
+    // naming one bypasses the engine's safety net for the backend that was picked.
+    ...(probe.float32Filterable ? {} : { backend: 'webgl' }),
     fov: 28,
     depth: true, // room meshes and the splat character must depth-sort against each other
     bgColor: { r: 0.79, g: 0.77, b: 0.82, a: 1 },
@@ -361,7 +384,38 @@ async function runProbe() {
   return out;
 }
 
+// ---------------------------------------------------------------------------
+// On-screen diagnostics (a phone has no console). Toggle with stage.setDebug(true).
+// ---------------------------------------------------------------------------
+let badge, badgeTimer;
+function setDebug(on) {
+  if (!on) { badge?.remove(); badge = null; cancelAnimationFrame(badgeTimer); return; }
+  if (badge) return;
+  badge = document.createElement('div');
+  badge.style.cssText = 'position:fixed;right:0;top:44%;z-index:99999;pointer-events:none;padding:6px 8px;margin:4px;background:rgba(0,0,0,.72);color:#0f0;border-radius:6px;font:600 10px/1.45 ui-monospace,Menlo,monospace;white-space:pre';
+  document.body.appendChild(badge);
+  let frames = 0, last = performance.now();
+  const tick = () => {
+    frames++;
+    const now = performance.now();
+    if (now - last >= 1000) {
+      const d = deviceInfo();
+      badge.textContent =
+        `fps       ${Math.round((frames * 1000) / (now - last))}\n` +
+        `backend   ${d.backend}  (chose ${probe.chose})\n` +
+        `nav.gpu   ${probe.hasNavGpu}  f32filterable ${probe.float32Filterable}\n` +
+        `gpu       ${d.gpu || '?'}\n` +
+        `canvas    ${d.canvasPx.join('x')}  dpr ${d.dpr}  ratio ${RATIOS[ratioIndex]}\n` +
+        `marks     ${JSON.stringify(marks)}`;
+      frames = 0; last = now;
+    }
+    badgeTimer = requestAnimationFrame(tick);
+  };
+  tick();
+}
+
 window.stage = {
+  setDebug,
   runProbe, setPixelRatio, sampleFrames,
   load, gesture, setMode, orbit, zoom, resetOrbit, setTheme,
   nextTheme: () => setTheme(themeIndex + 1),
