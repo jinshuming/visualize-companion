@@ -1,0 +1,23 @@
+{
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Stage/AvatarController.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/AvatarController.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/AvatarController.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/AvatarController.dia",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/AvatarController.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/AvatarController.swiftdeps"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Views/Backdrop.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Backdrop.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Backdrop.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Backdrop.dia",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Backdrop.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Backdrop.swiftdeps"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Views/CallLayer.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallLayer.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallLayer.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallLayer.dia",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallLayer.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallLayer.swiftdeps"
+  }
+}

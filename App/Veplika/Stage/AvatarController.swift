@@ -56,6 +56,14 @@ final class AvatarController: NSObject {
         run("window.stage.gesture('\(gesture.rawValue)')")
     }
 
+    #if DEBUG
+    /// Runs the web stage's scripted frame-rate probe and returns its JSON report.
+    func runPerfProbe() async -> String? {
+        let js = "return JSON.stringify(await window.stage.runProbe())"
+        return try? await webView.callAsyncJavaScript(js, contentWorld: .page) as? String
+    }
+    #endif
+
     private func pushCompanion() {
         guard engineReady, let id = wantedCompanion else { return }
         run("void window.stage.load('\(id)')")

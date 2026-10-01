@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>logFormatVersion</key>
+	<integer>13</integer>
+	<key>logs</key>
+	<dict>
+		<key>48F55695-660C-4603-AC75-48839CCFC341</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>48F55695-660C-4603-AC75-48839CCFC341.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>S</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>0</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>0</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>Veplika project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>Veplika</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building project Veplika with scheme Veplika</string>
+			<key>timeStartedRecording</key>
+			<real>812535048.01403606</real>
+			<key>timeStoppedRecording</key>
+			<real>812535069.81911802</real>
+			<key>title</key>
+			<string>Building project Veplika with scheme Veplika</string>
+			<key>uniqueIdentifier</key>
+			<string>48F55695-660C-4603-AC75-48839CCFC341</string>
+		</dict>
+		<key>ED5B6895-A48F-4345-9449-C37672DB251E</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>ED5B6895-A48F-4345-9449-C37672DB251E.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>S</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>0</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>0</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>Veplika project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>Veplika</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building project Veplika with scheme Veplika</string>
+			<key>timeStartedRecording</key>
+			<real>812535155.20112395</real>
+			<key>timeStoppedRecording</key>
+			<real>812535160.33780897</real>
+			<key>title</key>
+			<string>Building project Veplika with scheme Veplika</string>
+			<key>uniqueIdentifier</key>
+			<string>ED5B6895-A48F-4345-9449-C37672DB251E</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

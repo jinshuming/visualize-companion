@@ -1,0 +1,23 @@
+{
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Views/CompanionPickerView.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CompanionPickerView.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CompanionPickerView.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CompanionPickerView.dia",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CompanionPickerView.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CompanionPickerView.swiftdeps"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Views/DesignTokens.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/DesignTokens.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/DesignTokens.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/DesignTokens.dia",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/DesignTokens.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/DesignTokens.swiftdeps"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Views/InputBar.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/InputBar.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/InputBar.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/InputBar.dia",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/InputBar.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/InputBar.swiftdeps"
+  }
+}

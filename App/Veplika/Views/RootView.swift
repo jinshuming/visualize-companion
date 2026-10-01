@@ -55,6 +55,18 @@ struct RootView: View {
                 if store.speaksReplies || call.isActive { speech.speak(reply.text, language: store.companion.voiceLanguage) }
             }
         }
+        #if DEBUG
+        .task {
+            guard ProcessInfo.processInfo.arguments.contains("-perfProbe") else { return }
+            while avatar.status != .loaded { try? await Task.sleep(for: .milliseconds(200)) }
+            try? await Task.sleep(for: .seconds(2))
+            if let json = await avatar.runPerfProbe() {
+                let url = URL.documentsDirectory.appendingPathComponent("perf.json")
+                try? json.write(to: url, atomically: true, encoding: .utf8)
+                print("PERF_PROBE_DONE \(url.path)")
+            }
+        }
+        #endif
         .onChange(of: mode) { _, m in avatar.setMode(m.stageName) }
         .onChange(of: store.companion) { _, new in avatar.show(new) }
         .onChange(of: L.current) { _, _ in store.languageChanged() }

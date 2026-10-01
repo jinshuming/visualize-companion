@@ -1,0 +1,23 @@
+{
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Services/CallSession.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallSession.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallSession.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallSession.dia",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallSession.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallSession.swiftdeps"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Services/ChatEngine.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatEngine.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatEngine.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatEngine.dia",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatEngine.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatEngine.swiftdeps"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Views/ChatLayer.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatLayer.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatLayer.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatLayer.dia",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatLayer.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatLayer.swiftdeps"
+  }
+}
