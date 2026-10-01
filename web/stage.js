@@ -6,6 +6,10 @@ const BASE = location.origin + '/';
 const MOTIONS = ['idle', 'wave', 'nod', 'clap', 'cheer'];
 const rad = (d) => (d * Math.PI) / 180;
 
+const T0 = performance.now();
+const marks = {};
+const mark = (k) => { marks[k] = Math.round(performance.now() - T0); };
+
 let scene, app, character;
 
 // ---------------------------------------------------------------------------
@@ -203,11 +207,13 @@ function playClip(name, loop) {
 }
 
 async function load(id) {
+  mark('charLoadStart:' + id);
   post({ type: 'loading', id });
   const next = await Character.loadVsplat(scene, `${BASE}characters/${id}.vsplat`, { name: id });
   if (character) { try { character.destroy?.(); } catch {} }
   character = next;
   playClip('idle', true);
+  mark('charLoaded:' + id);
   post({ type: 'loaded', id });
 }
 
@@ -237,15 +243,126 @@ async function init() {
     ambientLight: 0.8,
   });
   app = scene.app;
+  mark('sceneCreated');
   buildRoom(THEMES[0]);
+  mark('roomBuilt');
   setMode('chat', true);
   app.on('update', tick);
+  setPixelRatio(RATIOS[0]);
   scene.start();
+  startAdaptiveQuality();
   await Promise.all(MOTIONS.map((m) => Animation.loadGlb(scene, `${BASE}motions/${m}.glb`, m)));
+  mark('motionsLoaded');
   post({ type: 'ready' });
 }
 
+
+// ---------------------------------------------------------------------------
+// Performance probe (used by the `-perfProbe` debug launch argument)
+// ---------------------------------------------------------------------------
+const pct = (a, p) => a[Math.min(a.length - 1, Math.floor((p / 100) * a.length))];
+
+/** Sample real presented frames for `ms`, calling `each()` once per frame. */
+function sampleFrames(ms, each) {
+  return new Promise((resolve) => {
+    const dts = [];
+    const start = performance.now();
+    let prev = start;
+    const step = (now) => {
+      dts.push(now - prev); prev = now;
+      each?.();
+      if (now - start < ms) return requestAnimationFrame(step);
+      const sorted = [...dts.slice(1)].sort((a, b) => a - b); // drop the first, it spans the setup
+      const sum = sorted.reduce((x, y) => x + y, 0);
+      resolve({
+        frames: sorted.length,
+        fps: +(sorted.length / (sum / 1000)).toFixed(1),
+        avgMs: +(sum / sorted.length).toFixed(1),
+        p50Ms: +pct(sorted, 50).toFixed(1),
+        p95Ms: +pct(sorted, 95).toFixed(1),
+        p99Ms: +pct(sorted, 99).toFixed(1),
+        maxMs: +sorted[sorted.length - 1].toFixed(1),
+        jank33: sorted.filter((d) => d > 33.4).length,
+      });
+    };
+    requestAnimationFrame(step);
+  });
+}
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+function deviceInfo() {
+  const dev = app.graphicsDevice, c = document.getElementById('canvas');
+  const gl = dev.gl;
+  let gpu = '';
+  try { const x = gl?.getExtension('WEBGL_debug_renderer_info'); gpu = x ? gl.getParameter(x.UNMASKED_RENDERER_WEBGL) : ''; } catch {}
+  return {
+    backend: dev.deviceType, gpu, dpr: window.devicePixelRatio, maxPixelRatio: dev.maxPixelRatio,
+    css: [innerWidth, innerHeight], canvasPx: [c.width, c.height],
+    megapixels: +((c.width * c.height) / 1e6).toFixed(2),
+  };
+}
+
+/** Render-resolution scale. The engine defaults to 1×; 2× is much sharper on 3× phones. */
+function setPixelRatio(r) {
+  const dev = app.graphicsDevice;
+  dev.maxPixelRatio = r;
+  dev.resizeCanvas(innerWidth, innerHeight);
+  return deviceInfo().canvasPx;
+}
+
+// Adaptive resolution: start at 2× (sharp on 3× phones) and step down if frames run long.
+// Never steps back up, so a hot device doesn't oscillate.
+const RATIOS = [2, 1.5, 1];
+let ratioIndex = 0;
+function startAdaptiveQuality() {
+  let acc = 0, n = 0;
+  app.on('update', (dt) => {
+    if (document.hidden || mode === undefined) return;
+    acc += dt; n++;
+    if (acc < 2.5) return;
+    const avgMs = (acc / n) * 1000;
+    acc = 0; n = 0;
+    if (avgMs > 22 && ratioIndex < RATIOS.length - 1) {
+      ratioIndex++;
+      setPixelRatio(RATIOS[ratioIndex]);
+      post({ type: 'quality', ratio: RATIOS[ratioIndex], avgMs: Math.round(avgMs) });
+    }
+  });
+}
+
+async function runProbe() {
+  ratioIndex = RATIOS.length - 1; // freeze adaptation while measuring
+  const out = { marks: { ...marks }, info: deviceInfo(), scenarios: {} };
+  setTheme(0);
+  setMode('chat', true); await wait(1200);
+  out.scenarios.chatIdle = await sampleFrames(4000);
+  gesture('cheer', 3500); await wait(300);
+  out.scenarios.chatGesture = await sampleFrames(3000);
+  await wait(1500);
+  setMode('space'); await wait(1500);
+  out.scenarios.spaceIdle = await sampleFrames(4000);
+  out.scenarios.spaceOrbit = await sampleFrames(4000, () => orbit(2.2, 0));
+  setMode('call'); await wait(1500);
+  out.scenarios.callIdle = await sampleFrames(4000);
+
+  // Resolution trade-off: the heaviest view (full-body orbit) and the call close-up at 1×/2×/3×.
+  out.quality = {};
+  for (const r of [1, 2, 3]) {
+    const px = setPixelRatio(r); await wait(600);
+    setMode('space', true); await wait(500);
+    const orbitS = await sampleFrames(3000, () => orbit(2.2, 0));
+    setMode('call', true); await wait(500);
+    const callS = await sampleFrames(3000);
+    out.quality[r + 'x'] = { canvasPx: px, megapixels: +((px[0] * px[1]) / 1e6).toFixed(2), spaceOrbit: orbitS, call: callS };
+  }
+  setPixelRatio(RATIOS[0]); ratioIndex = 0;
+  setMode('chat'); await wait(500);
+  out.info.after = deviceInfo();
+  return out;
+}
+
 window.stage = {
+  runProbe, setPixelRatio, sampleFrames,
   load, gesture, setMode, orbit, zoom, resetOrbit, setTheme,
   nextTheme: () => setTheme(themeIndex + 1),
   get scene() { return scene; }, get character() { return character; },
