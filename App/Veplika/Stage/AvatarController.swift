@@ -13,6 +13,7 @@ final class AvatarController: NSObject {
     let webView: WKWebView
 
     private var wantedCompanion: String?
+    private var wantedProfile = Companion.Style.chibi
     private var wantedMode = "chat"
     private var engineReady = false
 
@@ -36,6 +37,7 @@ final class AvatarController: NSObject {
 
     func show(_ companion: Companion) {
         wantedCompanion = companion.id
+        wantedProfile = companion.style
         pushCompanion()
     }
 
@@ -58,6 +60,9 @@ final class AvatarController: NSObject {
     }
 
     #if DEBUG
+    func thumbPrep(dist: Double, ty: Double) { run("window.stage.thumbPrep(\(dist), \(ty))") }
+    func setClear(_ hex: String) { run("window.stage.setClear('\(hex)')") }
+
     /// Runs the web stage's scripted frame-rate probe and returns its JSON report.
     func runPerfProbe() async -> String? {
         let js = "return JSON.stringify(await window.stage.runProbe())"
@@ -67,7 +72,7 @@ final class AvatarController: NSObject {
 
     private func pushCompanion() {
         guard engineReady, let id = wantedCompanion else { return }
-        run("void window.stage.load('\(id)')")
+        run("void window.stage.load('\(id)', '\(wantedProfile.rawValue)')")
     }
 
     private func run(_ js: String) {
@@ -80,7 +85,7 @@ final class AvatarController: NSObject {
         case "ready":
             engineReady = true
             status = .ready
-            if UserDefaults.standard.bool(forKey: "diagnostics") { setDebug(true) }
+            if UserDefaults.standard.bool(forKey: "diagnostics"), !ProcessInfo.processInfo.arguments.contains("-thumbCapture") { setDebug(true) }
             run("window.stage.setMode('\(wantedMode)', true)")
             pushCompanion()
         case "loading": status = .loading

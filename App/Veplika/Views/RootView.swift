@@ -18,15 +18,16 @@ struct RootView: View {
     @State private var showPicker = false
     @State private var showSettings = false
     @FocusState private var focused: Bool
+    private let thumbMode = ProcessInfo.processInfo.arguments.contains("-thumbCapture")
 
     var body: some View {
         ZStack {
             DS.Palette.wall.ignoresSafeArea()
             AvatarStageView(controller: avatar).ignoresSafeArea().allowsHitTesting(false)
-            bottomShade
+            if !thumbMode { bottomShade }
             stageStatus
 
-            Group {
+            if !thumbMode { Group {
                 switch mode {
                 case .chat:
                     ChatLayer(mode: $mode, draft: $draft, focus: $focused, showPicker: $showPicker,
@@ -41,11 +42,12 @@ struct RootView: View {
                     CallLayer(call: call, endCall: endCall)
                         .transition(.opacity)
                 }
-            }
+            } }
 
-            VStack { Wordmark().padding(.top, 14); Spacer() }.allowsHitTesting(false)
+            if !thumbMode { VStack { Wordmark().padding(.top, 14); Spacer() }.allowsHitTesting(false) }
         }
         .preferredColorScheme(.dark)
+        .statusBarHidden(thumbMode)
         .animation(DS.Motion.glide, value: mode)
         .onAppear {
             avatar.show(store.companion)
@@ -56,6 +58,24 @@ struct RootView: View {
             }
         }
         #if DEBUG
+        .task {
+            // Capture a transparent character thumbnail: `-thumbCapture -companion <id> -thumbDist 4.9 -thumbTy 0.95`.
+            // Alternates white/black backgrounds (animation frozen) and publishes the state for the host script.
+            guard thumbMode else { return }
+            while avatar.status != .loaded { try? await Task.sleep(for: .milliseconds(200)) }
+            try? await Task.sleep(for: .seconds(1.5))
+            let dist = UserDefaults.standard.double(forKey: "thumbDist")
+            let ty = UserDefaults.standard.double(forKey: "thumbTy")
+            avatar.thumbPrep(dist: dist > 0 ? dist : 4.9, ty: ty != 0 ? ty : 0.95)
+            let state = URL.documentsDirectory.appendingPathComponent("thumb-state.txt")
+            for (name, hex) in [("white", "#ffffff"), ("black", "#000000")] {
+                avatar.setClear(hex)
+                try? await Task.sleep(for: .seconds(1.2))
+                try? name.write(to: state, atomically: true, encoding: .utf8)
+                try? await Task.sleep(for: .seconds(3))
+            }
+            try? "done".write(to: state, atomically: true, encoding: .utf8)
+        }
         .task {
             guard ProcessInfo.processInfo.arguments.contains("-perfProbe") else { return }
             while avatar.status != .loaded { try? await Task.sleep(for: .milliseconds(200)) }

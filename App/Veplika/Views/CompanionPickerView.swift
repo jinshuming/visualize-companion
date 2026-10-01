@@ -34,7 +34,7 @@ struct CompanionPickerView: View {
         return VStack(spacing: 14) {
             Group {
                 if let img = c.thumbnail {
-                    Image(uiImage: img).resizable().scaledToFill()
+                    Image(uiImage: img).resizable().scaledToFit()
                 } else {
                     Color.gray.opacity(0.2)
                 }
