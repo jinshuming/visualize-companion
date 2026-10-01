@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "Used to talk with your digital companion by voice";
+"NSSpeechRecognitionUsageDescription" = "Used to turn your speech into text for your companion";
+"CFBundleDisplayName" = "Veplika";

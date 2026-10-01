@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "用于和你的数字伙伴语音聊天";
+"NSSpeechRecognitionUsageDescription" = "用于把你说的话转成文字发送给伙伴";
+"CFBundleDisplayName" = "Veplika";
