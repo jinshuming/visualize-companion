@@ -6,6 +6,9 @@ enum Gesture: String, Codable {
 
 /// A digital human. `id` is the file stem of its PINOC `.vsplat` and thumbnail in `Web/characters`.
 struct Companion: Identifiable, Hashable {
+    /// Body proportions drive camera framing: chibi heads are big, realistic faces are small.
+    enum Style: String { case chibi, realistic }
+
     let id: String
     let name: String
     private let taglineText: Bilingual
@@ -14,6 +17,7 @@ struct Companion: Identifiable, Hashable {
     let secondary: Color
     private let greetingText: Bilingual
     private let callGreetingText: Bilingual
+    var style: Style = .chibi
 
     var tagline: String { taglineText.text }
     var personality: String { personalityText.text }
@@ -46,6 +50,27 @@ struct Companion: Identifiable, Hashable {
                   accent: Color(red: 1.0, green: 0.78, blue: 0.30), secondary: Color(red: 0.30, green: 0.70, blue: 0.45),
                   greetingText: Bilingual("Hey, partner! Ready for today's adventure? Tell me how you're feeling first.", "嘿，伙伴！准备好今天的冒险了吗？先跟我说说你的心情吧。"),
                   callGreetingText: Bilingual("Hey, partner! Line's clear. Go ahead, report in.", "喂，伙伴！线路畅通，开始汇报吧。")),
+        Companion(id: "blonde", name: "Chloe",
+                  taglineText: Bilingual("Poised blonde", "优雅金发女生"),
+                  personalityText: Bilingual("Poised, witty and warm underneath", "从容、机智，内心很温暖"),
+                  accent: Color(red: 0.98, green: 0.78, blue: 0.52), secondary: Color(red: 0.93, green: 0.50, blue: 0.62),
+                  greetingText: Bilingual("Hello, you. Perfect timing, I was hoping you'd stop by. How are you, really?", "你好呀。来得正好，我正希望你能来。说真的，你今天怎么样？"),
+                  callGreetingText: Bilingual("Hello, you. I'm all ears.", "喂，是你呀。我听着呢。"),
+                  style: .realistic),
+        Companion(id: "cowgirl", name: "Jolene",
+                  taglineText: Bilingual("Western cowgirl", "西部牛仔女孩"),
+                  personalityText: Bilingual("Bold, free-spirited, tells tall tales", "洒脱、不羁，爱讲夸张的故事"),
+                  accent: Color(red: 0.93, green: 0.62, blue: 0.30), secondary: Color(red: 0.72, green: 0.36, blue: 0.25),
+                  greetingText: Bilingual("Well howdy, partner! Pull up a chair. What brings you to town?", "嗨，伙计！快坐。什么风把你吹到镇上来了？"),
+                  callGreetingText: Bilingual("Howdy! Line's open, talk to me.", "嗨！线路通着呢，说吧。"),
+                  style: .realistic),
+        Companion(id: "selfie", name: "Sam",
+                  taglineText: Bilingual("Close-up selfie buddy", "自拍特写小伙伴"),
+                  personalityText: Bilingual("Chatty, playful, always up for a selfie", "话多、爱玩，随时来张自拍"),
+                  accent: Color(red: 0.40, green: 0.70, blue: 0.95), secondary: Color(red: 0.55, green: 0.45, blue: 0.90),
+                  greetingText: Bilingual("Oh hey! You're in my frame. Say hi, then tell me everything.", "哦嘿！你入镜啦。先打个招呼，然后把一切都告诉我。"),
+                  callGreetingText: Bilingual("Hey hey! Can you see me? I can see you!", "嘿嘿！你看得到我吗？我看得到你！"),
+                  style: .realistic),
     ]
 
     static func find(_ id: String) -> Companion { all.first { $0.id == id } ?? all[0] }

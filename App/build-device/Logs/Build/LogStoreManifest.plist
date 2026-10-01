@@ -48,7 +48,7 @@
 			<key>uniqueIdentifier</key>
 			<string>4A749068-CE87-45F6-8037-EC98D1BFBBBC</string>
 		</dict>
-		<key>98D024DC-9FD8-4A13-A8E6-756ADD221105</key>
+		<key>6E322CCA-4074-465C-94F4-243559EE9D5E</key>
 		<dict>
 			<key>className</key>
 			<string>IDECommandLineBuildLog</string>
@@ -57,7 +57,7 @@
 			<key>domainType</key>
 			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
 			<key>fileName</key>
-			<string>98D024DC-9FD8-4A13-A8E6-756ADD221105.xcactivitylog</string>
+			<string>6E322CCA-4074-465C-94F4-243559EE9D5E.xcactivitylog</string>
 			<key>hasPrimaryLog</key>
 			<true/>
 			<key>primaryObservable</key>
@@ -82,55 +82,13 @@
 			<key>signature</key>
 			<string>Building project Veplika with scheme Veplika</string>
 			<key>timeStartedRecording</key>
-			<real>812535615.05668604</real>
+			<real>812536824.08526003</real>
 			<key>timeStoppedRecording</key>
-			<real>812535621.86216295</real>
+			<real>812536832.39430702</real>
 			<key>title</key>
 			<string>Building project Veplika with scheme Veplika</string>
 			<key>uniqueIdentifier</key>
-			<string>98D024DC-9FD8-4A13-A8E6-756ADD221105</string>
-		</dict>
-		<key>ED5B6895-A48F-4345-9449-C37672DB251E</key>
-		<dict>
-			<key>className</key>
-			<string>IDECommandLineBuildLog</string>
-			<key>documentTypeString</key>
-			<string>&lt;nil&gt;</string>
-			<key>domainType</key>
-			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
-			<key>fileName</key>
-			<string>ED5B6895-A48F-4345-9449-C37672DB251E.xcactivitylog</string>
-			<key>hasPrimaryLog</key>
-			<true/>
-			<key>primaryObservable</key>
-			<dict>
-				<key>highLevelStatus</key>
-				<string>S</string>
-				<key>totalNumberOfAnalyzerIssues</key>
-				<integer>0</integer>
-				<key>totalNumberOfErrors</key>
-				<integer>0</integer>
-				<key>totalNumberOfTestFailures</key>
-				<integer>0</integer>
-				<key>totalNumberOfWarnings</key>
-				<integer>0</integer>
-			</dict>
-			<key>schemeIdentifier-containerName</key>
-			<string>Veplika project</string>
-			<key>schemeIdentifier-schemeName</key>
-			<string>Veplika</string>
-			<key>schemeIdentifier-sharedScheme</key>
-			<integer>1</integer>
-			<key>signature</key>
-			<string>Building project Veplika with scheme Veplika</string>
-			<key>timeStartedRecording</key>
-			<real>812535155.20112395</real>
-			<key>timeStoppedRecording</key>
-			<real>812535160.33780897</real>
-			<key>title</key>
-			<string>Building project Veplika with scheme Veplika</string>
-			<key>uniqueIdentifier</key>
-			<string>ED5B6895-A48F-4345-9449-C37672DB251E</string>
+			<string>6E322CCA-4074-465C-94F4-243559EE9D5E</string>
 		</dict>
 	</dict>
 </dict>

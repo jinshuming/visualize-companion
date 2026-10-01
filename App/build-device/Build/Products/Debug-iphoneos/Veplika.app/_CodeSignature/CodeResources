@@ -26,7 +26,23 @@
 		</data>
 		<key>Veplika.debug.dylib</key>
 		<data>
-		8S1v38Hq2DlUbF5rxK0qnT4/Yzc=
+		zcH7fZxwFXieeYSZBD1lrouOHI4=
+		</data>
+		<key>Web/characters/blonde.vsplat</key>
+		<data>
+		BM/MGFwZD0MeAgL0h6EYDQoeSAA=
+		</data>
+		<key>Web/characters/blonde.webp</key>
+		<data>
+		Qt6Ib43RG+W7krwccDndpDTx5b0=
+		</data>
+		<key>Web/characters/cowgirl.vsplat</key>
+		<data>
+		TuxKuotYnlnGcAOPKH+mKxaEKOY=
+		</data>
+		<key>Web/characters/cowgirl.webp</key>
+		<data>
+		/YZHmxfSvcJgJ91F5Ugmg0fvFkU=
 		</data>
 		<key>Web/characters/drummer.vsplat</key>
 		<data>
@@ -60,6 +76,14 @@
 		<data>
 		0vOpt594faQ/M/ga0m9WkfYfX9U=
 		</data>
+		<key>Web/characters/selfie.vsplat</key>
+		<data>
+		93QyHrZVPdhOvU4GpYIOWGymmAY=
+		</data>
+		<key>Web/characters/selfie.webp</key>
+		<data>
+		eNcFa3vF6dymYtBMJjjw2d+5VAs=
+		</data>
 		<key>Web/motions/cheer.glb</key>
 		<data>
 		eQGb9a9+JJZ+TVf/rpSZyOW4iqw=
@@ -82,7 +106,7 @@
 		</data>
 		<key>Web/stage.bundle.js</key>
 		<data>
-		HKtgEXy0KSQV32j4cK+MVEqEjGc=
+		SWBF3vZX/2eZ6BmWd8pymaS0yxM=
 		</data>
 		<key>Web/stage.html</key>
 		<data>
@@ -90,7 +114,7 @@
 		</data>
 		<key>__preview.dylib</key>
 		<data>
-		48Egur9lvNjE9zBmNzhHMDVzg6U=
+		GD+CMX+uFmtUbkMDgdJwkyY4dmk=
 		</data>
 		<key>embedded.mobileprovision</key>
 		<data>
@@ -142,7 +166,35 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			0Ijov2z10csT91Jlw/9P/yoxoFp9TKVhDhJrYzqcUTg=
+			Pk1GYyeLJL+Z03VpTNT91XSdEVTzKk1RrKvvLO1pqr0=
+			</data>
+		</dict>
+		<key>Web/characters/blonde.vsplat</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			RBt9JKMUUDj3HZ2gzBN0F2Pt3fpDLOJ6N4hQ6FN6qSw=
+			</data>
+		</dict>
+		<key>Web/characters/blonde.webp</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			Nt5LotvTGA5J7cI9a3yy3XlRXLGx/DD70G30sr2ggmE=
+			</data>
+		</dict>
+		<key>Web/characters/cowgirl.vsplat</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			Cep1Qb+iAnumf7x8h9yeI6GieKh8Vp5ahFxa+XOEZcM=
+			</data>
+		</dict>
+		<key>Web/characters/cowgirl.webp</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			ZNwoQy8w8bf1PjEiqhxE3rRiYeWovJqHzntCbNokzmU=
 			</data>
 		</dict>
 		<key>Web/characters/drummer.vsplat</key>
@@ -201,6 +253,20 @@
 			TNG4YJeDh9hal5bzsrnpq4ofarzt4qdIZcarEpz+o6k=
 			</data>
 		</dict>
+		<key>Web/characters/selfie.vsplat</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			5SSmwRaIFjoG4R7wO0De74RzR6AOPF1AZeyOICfbFeo=
+			</data>
+		</dict>
+		<key>Web/characters/selfie.webp</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			fNwlhVQ58VElrvOzu9RRsWLaAX5CBYAZc+Js9YnJLI4=
+			</data>
+		</dict>
 		<key>Web/motions/cheer.glb</key>
 		<dict>
 			<key>hash2</key>
@@ -240,7 +306,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			V2AqPM4YKEinP0v2dYzdsrlu8b562Dk96SrJ1LuPdUA=
+			BUcV6ZXYDZg7EBt08iAAI+otGWBspMo+9KkFsmy6UeU=
 			</data>
 		</dict>
 		<key>Web/stage.html</key>
@@ -254,7 +320,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			ZCDTMoVT5rdGGJvmR4ROlnKfyvvrQuJIxS3MoI1dO/0=
+			k1LEb+SyBj0EW8p3RZPe/nAiJm7LJvDplJtgaWlLFao=
 			</data>
 		</dict>
 		<key>embedded.mobileprovision</key>

@@ -168,7 +168,18 @@ const MODES = {
   chat: { dist: 4.4, ty: 1.0, shift: 0.27, yaw: 0, pitch: 3 },
   // face close-up for voice calls
   call: { dist: 2.8, ty: 1.38, shift: 0, yaw: 0, pitch: 1 },
+  // used only when capturing picker thumbnails
+  thumb: { dist: 4.9, ty: 0.95, shift: 0, yaw: 0, pitch: 0 },
 };
+// Per-style framing overrides (realistic faces are smaller than chibi heads, so push in and aim higher).
+const PROFILES = {
+  chibi: { call: { dist: 2.8, ty: 1.38 } },
+  realistic: { call: { dist: 2.2, ty: 1.53 } },
+};
+function setProfile(name) {
+  Object.assign(MODES.call, (PROFILES[name] || PROFILES.chibi).call);
+  if (mode === 'call') Object.assign(tgt, MODES.call);
+}
 const cur = { ...MODES.chat }, tgt = { ...MODES.chat };
 let mode = 'chat';
 
@@ -224,7 +235,8 @@ function playClip(name, loop) {
   character.playAnimation(name, { loop });
 }
 
-async function load(id) {
+async function load(id, profile = 'chibi') {
+  setProfile(profile);
   mark('charLoadStart:' + id);
   post({ type: 'loading', id });
   const next = await Character.loadVsplat(scene, `${BASE}characters/${id}.vsplat`, { name: id });
@@ -414,7 +426,18 @@ function setDebug(on) {
   tick();
 }
 
+// Thumbnail capture: hide the room, freeze the animation, pick a flat clear colour.
+// Two captures on black and white let the host recover true alpha.
+function thumbPrep(dist, ty) {
+  room.enabled = false;
+  app.timeScale = 0;
+  MODES.thumb.dist = dist; MODES.thumb.ty = ty;
+  setMode('thumb', true);
+}
+function setClear(hex) { scene.cameraEntity.camera.clearColor = new pc.Color().fromString(hex); }
+
 window.stage = {
+  thumbPrep, setClear,
   setDebug,
   runProbe, setPixelRatio, sampleFrames,
   load, gesture, setMode, orbit, zoom, resetOrbit, setTheme,

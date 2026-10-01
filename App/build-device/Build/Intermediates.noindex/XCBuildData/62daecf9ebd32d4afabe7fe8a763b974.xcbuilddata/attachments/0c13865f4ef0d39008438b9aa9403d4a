@@ -1,0 +1,219 @@
+{
+  "" : {
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Veplika-primary.dia",
+    "emit-module-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Veplika-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Veplika-primary-emit-module.dia",
+    "pch" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Veplika-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Veplika-primary.swiftdeps"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Models/ChatMessage.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatMessage.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatMessage.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatMessage.dia",
+    "index-unit-output-path" : "/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatMessage.o",
+    "llvm-bc" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatMessage.bc",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatMessage.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatMessage.swiftdeps",
+    "swiftmodule" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatMessage~partial.swiftmodule"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Models/Companion.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Companion.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Companion.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Companion.dia",
+    "index-unit-output-path" : "/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Companion.o",
+    "llvm-bc" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Companion.bc",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Companion.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Companion.swiftdeps",
+    "swiftmodule" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Companion~partial.swiftmodule"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Models/Localization.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Localization.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Localization.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Localization.dia",
+    "index-unit-output-path" : "/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Localization.o",
+    "llvm-bc" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Localization.bc",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Localization.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Localization.swiftdeps",
+    "swiftmodule" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Localization~partial.swiftmodule"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Services/CallSession.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallSession.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallSession.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallSession.dia",
+    "index-unit-output-path" : "/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallSession.o",
+    "llvm-bc" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallSession.bc",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallSession.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallSession.swiftdeps",
+    "swiftmodule" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallSession~partial.swiftmodule"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Services/ChatEngine.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatEngine.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatEngine.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatEngine.dia",
+    "index-unit-output-path" : "/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatEngine.o",
+    "llvm-bc" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatEngine.bc",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatEngine.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatEngine.swiftdeps",
+    "swiftmodule" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatEngine~partial.swiftmodule"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Services/ChatStore.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatStore.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatStore.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatStore.dia",
+    "index-unit-output-path" : "/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatStore.o",
+    "llvm-bc" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatStore.bc",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatStore.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatStore.swiftdeps",
+    "swiftmodule" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatStore~partial.swiftmodule"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Services/SpeechService.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SpeechService.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SpeechService.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SpeechService.dia",
+    "index-unit-output-path" : "/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SpeechService.o",
+    "llvm-bc" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SpeechService.bc",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SpeechService.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SpeechService.swiftdeps",
+    "swiftmodule" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SpeechService~partial.swiftmodule"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Stage/AvatarController.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/AvatarController.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/AvatarController.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/AvatarController.dia",
+    "index-unit-output-path" : "/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/AvatarController.o",
+    "llvm-bc" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/AvatarController.bc",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/AvatarController.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/AvatarController.swiftdeps",
+    "swiftmodule" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/AvatarController~partial.swiftmodule"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/VeplikaApp.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/VeplikaApp.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/VeplikaApp.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/VeplikaApp.dia",
+    "index-unit-output-path" : "/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/VeplikaApp.o",
+    "llvm-bc" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/VeplikaApp.bc",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/VeplikaApp.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/VeplikaApp.swiftdeps",
+    "swiftmodule" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/VeplikaApp~partial.swiftmodule"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Views/Backdrop.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Backdrop.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Backdrop.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Backdrop.dia",
+    "index-unit-output-path" : "/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Backdrop.o",
+    "llvm-bc" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Backdrop.bc",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Backdrop.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Backdrop.swiftdeps",
+    "swiftmodule" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/Backdrop~partial.swiftmodule"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Views/CallLayer.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallLayer.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallLayer.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallLayer.dia",
+    "index-unit-output-path" : "/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallLayer.o",
+    "llvm-bc" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallLayer.bc",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallLayer.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallLayer.swiftdeps",
+    "swiftmodule" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CallLayer~partial.swiftmodule"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Views/ChatLayer.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatLayer.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatLayer.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatLayer.dia",
+    "index-unit-output-path" : "/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatLayer.o",
+    "llvm-bc" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatLayer.bc",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatLayer.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatLayer.swiftdeps",
+    "swiftmodule" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/ChatLayer~partial.swiftmodule"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Views/CompanionPickerView.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CompanionPickerView.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CompanionPickerView.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CompanionPickerView.dia",
+    "index-unit-output-path" : "/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CompanionPickerView.o",
+    "llvm-bc" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CompanionPickerView.bc",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CompanionPickerView.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CompanionPickerView.swiftdeps",
+    "swiftmodule" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/CompanionPickerView~partial.swiftmodule"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Views/DesignTokens.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/DesignTokens.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/DesignTokens.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/DesignTokens.dia",
+    "index-unit-output-path" : "/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/DesignTokens.o",
+    "llvm-bc" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/DesignTokens.bc",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/DesignTokens.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/DesignTokens.swiftdeps",
+    "swiftmodule" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/DesignTokens~partial.swiftmodule"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Views/InputBar.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/InputBar.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/InputBar.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/InputBar.dia",
+    "index-unit-output-path" : "/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/InputBar.o",
+    "llvm-bc" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/InputBar.bc",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/InputBar.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/InputBar.swiftdeps",
+    "swiftmodule" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/InputBar~partial.swiftmodule"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Views/MessageBubble.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/MessageBubble.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/MessageBubble.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/MessageBubble.dia",
+    "index-unit-output-path" : "/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/MessageBubble.o",
+    "llvm-bc" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/MessageBubble.bc",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/MessageBubble.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/MessageBubble.swiftdeps",
+    "swiftmodule" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/MessageBubble~partial.swiftmodule"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Views/RootView.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/RootView.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/RootView.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/RootView.dia",
+    "index-unit-output-path" : "/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/RootView.o",
+    "llvm-bc" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/RootView.bc",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/RootView.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/RootView.swiftdeps",
+    "swiftmodule" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/RootView~partial.swiftmodule"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Views/SettingsView.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SettingsView.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SettingsView.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SettingsView.dia",
+    "index-unit-output-path" : "/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SettingsView.o",
+    "llvm-bc" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SettingsView.bc",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SettingsView.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SettingsView.swiftdeps",
+    "swiftmodule" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SettingsView~partial.swiftmodule"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Views/SpaceLayer.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SpaceLayer.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SpaceLayer.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SpaceLayer.dia",
+    "index-unit-output-path" : "/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SpaceLayer.o",
+    "llvm-bc" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SpaceLayer.bc",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SpaceLayer.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SpaceLayer.swiftdeps",
+    "swiftmodule" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/SpaceLayer~partial.swiftmodule"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/Veplika/Views/TopBar.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/TopBar.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/TopBar.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/TopBar.dia",
+    "index-unit-output-path" : "/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/TopBar.o",
+    "llvm-bc" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/TopBar.bc",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/TopBar.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/TopBar.swiftdeps",
+    "swiftmodule" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/TopBar~partial.swiftmodule"
+  },
+  "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/chenmo/Desktop/Dev/Veplika/App/build-device/Build/Intermediates.noindex/Veplika.build/Debug-iphoneos/Veplika.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  }
+}
