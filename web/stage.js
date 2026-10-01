@@ -35,12 +35,13 @@ async function webgpuCanDrawSplats() {
 // Colours were sampled from reference screenshots.
 // ---------------------------------------------------------------------------
 const THEMES = [
+  // lavender: the default studio. Every theme is a low-chroma pastel; no vivid colour anywhere.
   { name: 'lavender', wallTop: '#D4D1DD', wallMid: '#F1F0F6', wallLow: '#B9B2BE', floor: '#E9E6EE', floorEdge: '#B4AEB8',
-    skyTop: '#84C5FF', skyLow: '#C6D9FA', frame: '#F6F5FA', panel: '#C5BFCE', chair: '#EEECF2', clear: '#C9C4D0' },
-  { name: 'sunset', wallTop: '#E3B8B8', wallMid: '#FBE4D6', wallLow: '#C79AA2', floor: '#F2D9CF', floorEdge: '#BE949C',
-    skyTop: '#FF9E7A', skyLow: '#FFD9A8', frame: '#FFF3EA', panel: '#E0B4B2', chair: '#FBEDE6', clear: '#DDB3AE' },
-  { name: 'night', wallTop: '#2B2C55', wallMid: '#4A4C86', wallLow: '#23244A', floor: '#3A3B72', floorEdge: '#1E1F44',
-    skyTop: '#0E1235', skyLow: '#3D4A9C', frame: '#8E91C8', panel: '#33346A', chair: '#9C9FD0', clear: '#2F3060' },
+    skyTop: '#B8D4F2', skyLow: '#E4EEF9', frame: '#F6F5FA', panel: '#C5BFCE', chair: '#EEECF2', clear: '#C9C4D0' },
+  { name: 'peach', wallTop: '#E6CFCB', wallMid: '#F8E8DF', wallLow: '#CDB3B4', floor: '#F1E1DA', floorEdge: '#C4AEB0',
+    skyTop: '#F5C9B6', skyLow: '#FBE6D2', frame: '#FFF6EF', panel: '#DCC3C0', chair: '#FBEDE6', clear: '#DDC8C4' },
+  { name: 'dusk', wallTop: '#B9BCD8', wallMid: '#DCDDEE', wallLow: '#9EA1BF', floor: '#D3D4E6', floorEdge: '#9A9DBB',
+    skyTop: '#A5AEDA', skyLow: '#D6DAF2', frame: '#EEF0FA', panel: '#AEB1CF', chair: '#E6E7F4', clear: '#B4B7D2' },
 ];
 
 const ROOM = 5.5; // half extent of the room; the orbit camera stays inside it

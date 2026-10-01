@@ -14,25 +14,83 @@ extension Color {
 /// (924×2000 px captures of a 393 pt-wide iPhone, i.e. 1 pt ≈ 2.35 px).
 enum DS {
     // MARK: Colour
+    //
+    // The rule: **no saturated colour.** Fills are airy pastels (high brightness, low chroma) or
+    // neutrals; colour appears as a translucent tint, never as a solid vivid block. Dark values are
+    // allowed only as text ink. `DS.audit()` enforces this at launch in debug builds.
+
+    /// Primitives: the raw ramps. Nothing in the UI references these directly.
+    enum Pastel {
+        static let lavender = Color(hex: 0xC9C4D0)   // room wall / base neutral-violet
+        static let periwinkle = Color(hex: 0xAEB8F0)  // brand
+        static let mist = Color(hex: 0xCBD2F6)
+        static let sky = Color(hex: 0xBCD6F2)
+        static let mint = Color(hex: 0xA8E0D2)
+        static let coral = Color(hex: 0xF3AEA2)
+        static let peach = Color(hex: 0xF5CDB8)
+        static let butter = Color(hex: 0xF4E2B0)
+        static let rose = Color(hex: 0xF0C0CC)
+        static let lilac = Color(hex: 0xD8B9F0)
+        static let ink = Color(hex: 0x2A2740)         // text only
+        static let inkSoft = Color(hex: 0x5C5873)     // secondary text only
+    }
+
+    /// Semantic tokens: what the UI actually uses.
     enum Palette {
-        /// Room clear colour while the 3D stage is loading (sampled wall tone).
-        static let wall = Color(hex: 0xC9C4D0)
-        /// Own message bubble: deep navy (sampled #01004C … #0E0A5E).
-        static let userBubble = Color(hex: 0x05004F)
-        static let userText = Color.white
-        /// Companion bubble: near-white with a violet cast (#FDFCFF), ink text (#232228).
+        /// Room clear colour while the 3D stage is loading.
+        static let wall = Pastel.lavender
+        static let brand = Pastel.periwinkle
+        static let ink = Pastel.ink
+        static let inkSoft = Pastel.inkSoft
+
+        /// Own bubble: soft periwinkle, ink text. Companion bubble: near-white, ink text.
+        static let userBubble = Pastel.mist
+        static let userText = Pastel.ink
         static let companionBubble = Color(hex: 0xFDFCFF)
-        static let companionText = Color(hex: 0x232228)
-        /// Frosted control tint over the room: grey-violet (#989BAE bar, #6B6E81 buttons).
-        static let glassTint = Color(hex: 0xA9A6BA, opacity: 0.40)
-        static let glassTintStrong = Color(hex: 0x6B6E81, opacity: 0.50)
-        /// Date separator pill: white wash with white text.
+        static let companionText = Pastel.ink
+
+        /// Frosted control tint over the room: cool, light and translucent.
+        static let glassTint = Color(hex: 0xB4B2C6, opacity: 0.38)
+        static let glassTintStrong = Color(hex: 0x8E8CA6, opacity: 0.42)
         static let datePillFill = Color.white.opacity(0.34)
-        /// Hang-up button (#FB3F02).
-        static let hangUp = Color(hex: 0xFB3F02)
-        static let onlineGreen = Color(hex: 0x2CB04D)
-        static let placeholder = Color.white.opacity(0.5)
+        static let placeholder = Color.white.opacity(0.55)
         static let icon = Color.white
+
+        /// Hang-up and alerts: a soft coral with dark ink, not a vivid red.
+        static let hangUp = Pastel.coral
+        static let onHangUp = Color(hex: 0x6B2F2A)
+        static let alert = Pastel.coral
+        static let online = Color(hex: 0xA8DFC4)
+
+        /// Onboarding surfaces (light pastel aurora).
+        static let auroraTop = Color(hex: 0xE4E0F7)
+        static let auroraMid = Color(hex: 0xD3E3F8)
+        static let auroraLow = Color(hex: 0xF7DDE4)
+    }
+
+    /// Tokens checked by `audit()`. Ink is exempt because it is text, not a fill.
+    private static let audited: [(String, UInt32)] = [
+        ("wall", 0xC9C4D0), ("brand", 0xAEB8F0), ("userBubble", 0xCBD2F6), ("companionBubble", 0xFDFCFF),
+        ("glassTint", 0xB4B2C6), ("glassTintStrong", 0x8E8CA6), ("hangUp", 0xF3AEA2), ("online", 0xA8DFC4),
+        ("mint", 0xA8E0D2), ("sky", 0xBCD6F2), ("peach", 0xF5CDB8), ("butter", 0xF4E2B0), ("rose", 0xF0C0CC),
+        ("lilac", 0xD8B9F0), ("auroraTop", 0xE4E0F7), ("auroraMid", 0xD3E3F8), ("auroraLow", 0xF7DDE4),
+    ]
+
+    /// Chroma = saturation × brightness. Pastels sit around 0.2–0.3; a vivid colour is near 1.
+    static func chroma(_ hex: UInt32) -> Double {
+        let r = Double((hex >> 16) & 0xFF) / 255, g = Double((hex >> 8) & 0xFF) / 255, b = Double(hex & 0xFF) / 255
+        return max(r, g, b) - min(r, g, b)
+    }
+    static let maxChroma = 0.34
+
+    /// Debug-only guard: flags any fill that breaks the "no saturated colour" rule.
+    static func audit() {
+        #if DEBUG
+        let all = audited + Companion.all.flatMap { [("\($0.id).accent", $0.accentHex), ("\($0.id).secondary", $0.secondaryHex)] }
+        for (name, hex) in all where chroma(hex) > maxChroma {
+            print("⚠️ DS.audit: \(name) #\(String(hex, radix: 16)) chroma \(String(format: "%.2f", chroma(hex))) > \(maxChroma)")
+        }
+        #endif
     }
 
     // MARK: Metrics (pt)

@@ -28,7 +28,7 @@ struct InputBar: View {
                             Image(systemName: isListening ? "waveform" : "mic.fill")
                                 .symbolEffect(.variableColor.iterative, isActive: isListening)
                                 .font(.system(size: 19, weight: .semibold))
-                                .foregroundStyle(isListening ? Color(hex: 0xFF6B4A) : .white)
+                                .foregroundStyle(isListening ? DS.Palette.alert : .white)
                                 .frame(width: 30, height: 30)
                         }
                         Button(action: onCall) {
