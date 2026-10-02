@@ -10,7 +10,7 @@ Interaction and visual design are inspired by Replika-style companion apps. This
 - **Chat over a half-body avatar** — character on the left, messages on the right, frosted glass controls.
 - **360° space view** — full-body character in a 3D room; drag to orbit, pinch to zoom, double-tap to reset; three room themes.
 - **Voice call** — hands-free loop: listen → reply → speak, with mute, loudspeaker and hang-up.
-- **Onboarding** — gender, a few questions and a reference photo create your companion (UI mock; real generation is planned).
+- **Onboarding** — gender, a few questions, favourite music, a reference photo and a visual style (realistic / stylized CG / cartoon) create your companion (UI mock; real generation is planned).
 - **English / 中文** — English by default, switch in Settings. Replies and speech follow the language.
 - Gestures (wave / nod / clap / cheer), intimacy levels, per-companion chat history.
 - Calm pastel design system (no saturated colour), tokens in [`DesignTokens.swift`](App/Veplika/Views/DesignTokens.swift).
