@@ -26,6 +26,8 @@ struct Companion: Identifiable, Hashable {
     var secondaryHex: UInt32 { Self.hexTable[id]?.1 ?? 0 }
     var gender: Gender { Self.tagTable[id]?.gender ?? .female }
     var traits: Set<String> { Self.tagTable[id]?.traits ?? [] }
+    /// Onboarding visual-style bucket: `realistic`, `stylized` (none in the library yet) or `cartoon`.
+    var visualStyle: String { style == .realistic ? "realistic" : "cartoon" }
     var tagline: String { taglineText.text }
     var personality: String { personalityText.text }
     var greeting: String { greetingText.text }
@@ -92,15 +94,15 @@ struct Companion: Identifiable, Hashable {
         "selfie": (0xB8D6F4, 0xCDC3F0),
     ]
 
-    /// What each character is like; used by the (mock) onboarding matcher.
+    /// What each character is like (personality, look, activity, music genres); used by the (mock) onboarding matcher.
     static let tagTable: [String: (gender: Gender, traits: Set<String>)] = [
-        "neko": (.female, ["cool", "playful", "music"]),
-        "mint": (.female, ["gentle", "sweet", "talk"]),
-        "drummer": (.female, ["playful", "sporty", "music"]),
-        "explorer": (.male, ["playful", "sporty", "adventure", "confident"]),
-        "blonde": (.female, ["elegant", "intellectual", "confident", "talk", "learning"]),
-        "cowgirl": (.female, ["confident", "cool", "adventure"]),
-        "selfie": (.female, ["playful", "sweet", "talk"]),
+        "neko": (.female, ["cool", "playful", "music", "electronic", "lofi", "hiphop"]),
+        "mint": (.female, ["gentle", "sweet", "talk", "lofi", "folk", "classical"]),
+        "drummer": (.female, ["playful", "sporty", "music", "rock", "pop", "kpop"]),
+        "explorer": (.male, ["playful", "sporty", "adventure", "confident", "indie", "folk", "rock"]),
+        "blonde": (.female, ["elegant", "intellectual", "confident", "talk", "learning", "jazz", "classical"]),
+        "cowgirl": (.female, ["confident", "cool", "adventure", "country", "folk"]),
+        "selfie": (.female, ["playful", "sweet", "talk", "pop", "kpop", "soundtrack"]),
     ]
 
     static func find(_ id: String) -> Companion { all.first { $0.id == id } ?? all[0] }
