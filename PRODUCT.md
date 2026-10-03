@@ -1,6 +1,6 @@
 # Visualize Companion — Product Requirements (living document)
 
-> **Owner:** Shuming Jin (GitHub `jinshuming`) · **Created:** 2026-10-01 · **Last updated:** 2026-10-03
+> **Owner:** Shuming Jin (GitHub `jinshuming`) · **Created:** 2026-10-01 · **Last updated:** 2026-10-04
 >
 > This file is the source of truth for what the owner wants and why. Every agent (human or AI) must read it
 > **before starting work** and keep it current. If this file and a conversation disagree, the newest owner
@@ -108,6 +108,19 @@ in a room → voice call with face close-up.**
 ### R3 — Rich body-motion control **[Owner]**
 - **Status: Partial.** 5 clips wired (idle, wave, nod, clap, cheer) from PINOC's free library (54 clips).
   Per-clip yaw correction is needed because some clips bake a root rotation. Clips hard-cut (no crossfade) for that reason.
+- **Call conversation set — Done in simulator, Unverified on device (2026-10-04).** 12 clips generated with PINOC text-to-motion
+  (61 credits, owner-approved; 4 samples each, one picked by loop closure/amplitude/root drift, then checked on screen):
+  `idle_calm`, `idle_shift` (full-body base loops); `listen_nod`, `listen_tilt`; `talk_beats`, `talk_soft`; `laugh_soft`, `shy_hair`,
+  `think`, `hand_heart`, `shrug`, `sigh_sad` (upper-body overlays). Files in `Resources/motions/`, designed/driven by
+  `web/src/behavior.js`: base loop + one upper-body overlay at a time (engine bone-masked layer, faded in 0.3 s / out 0.5 s,
+  no yaw problems because pelvis/root are excluded). The call phase (idle/listening/thinking/speaking) picks gestures on a
+  randomised schedule (never the same twice in a row); a reply's emotion (`Reply.emotion`) interrupts with a reaction and sets
+  the speaking tone. These generated clips face away as full-body clips (root yaw 0, library clips 180), so the two base idles
+  carry `CLIP_YAW 180`.
+  - **Limits:** emotion comes from the mock chat's keyword intents (real model output is R10); one rig only measured on Chloe/Neko/
+    Gwen-class characters; talk gestures mostly use hands that are off-screen in the call close-up; per-persona amplitude not yet;
+    chat/space views still use the old 5 clips; clip picks were chosen by metrics + a glance, not a full review of all 4 samples.
+  - Candidates (all 48 samples) live in the PINOC library under the owner's account if a different pick is wanted.
 - **Planned:** a gesture vocabulary driven by conversation (R5); layered animation (upper body gestures over idle,
   engine supports bone-masked layers); text-to-motion for gaps (`generate_motion`, 1 credit/second, owner approval);
   proper blending that handles yaw.
@@ -187,6 +200,25 @@ in a room → voice call with face close-up.**
 - **Status: Done for the loop, Unverified on device.** Hands-free: listen → silence detect → reply → speak → listen.
   Face close-up framing per character style, mute, loudspeaker, hang-up, call timer.
 - **Gaps:** voice quality (R6), lip-sync, and the microphone path has only been exercised in the simulator.
+
+### R9a — Real-time voice in the video call, like talking to a real person **[Owner]** (2026-10-04)
+> When entering video-call mode, I want real-time voice conversation — like a call with a real person.
+
+- **Status: Planned.** Today's loop is half-duplex turn-taking (Apple STT → 1.3 s silence → full reply → Apple TTS),
+  roughly 3–5 s from end of speech to first sound, and she cannot be interrupted.
+- **Bar for "like a real person":** voice-to-voice latency ≤ ~1 s (target 500–800 ms); barge-in (user can cut her off
+  and she stops within ~200 ms); echo cancellation so loudspeaker calls work; semantic end-of-turn (not a fixed silence);
+  backchannels and listening behaviour while the user talks; emotional voice (R6); lip-sync and expression locked to
+  the audio (R4, R5).
+- **Proposed architecture (not yet approved):** a server-side voice agent (LiveKit Agents or Pipecat) connected to the
+  app over WebRTC. Cascaded pipeline: VAD → streaming ASR → turn detector → streaming LLM (Claude, sentence-chunked,
+  inline emotion/gesture tags) → streaming TTS with word/viseme timing → audio + a data channel of
+  `{phase, emotion, gesture, gaze, visemes}` events. iOS side: `AVAudioEngine` voice-processing I/O (AEC), LiveKit
+  Swift SDK, native audio playback whose clock drives lip-sync in the WebView. API keys live on the server only.
+- **Alternative to bake off:** end-to-end speech-to-speech models (lowest latency, hear the user's tone) — weaker on
+  per-character voice and on Claude-quality persona/structured output.
+- **Needs from the owner:** a backend to host the agent, per-minute budget, cascaded vs speech-to-speech decision after
+  a listening test, vendor choice for Chinese and English. Lip-sync is gated on the R4 facial-bone experiment.
 
 ### R10 — Chat brain
 - **Status: Mock** (`MockChatEngine`, persona-flavoured canned lines, EN+ZH). **Planned:** Claude API behind the
@@ -299,6 +331,7 @@ app used to cut every gesture at 2.4 s, so the nod never reached its peak. Gestu
 - Content boundaries for a companion product (romance, age gating, safety) — none defined yet.
 - Which Apple team/account should ship builds?
 - Budget: PINOC credits per new user, TTS cost per minute.
+- Real-time call (R9a): where to host the voice agent, per-minute budget, and cascaded vs speech-to-speech.
 
 ---
 
@@ -315,6 +348,7 @@ app used to cut every gesture at 2.4 s, so the nod never reached its peak. Gestu
 | 2026-10-01 | Default render resolution 2× with automatic step-down. | Perf data on iPhone 13 Pro |
 | 2026-10-01 | No saturated colour anywhere; pastel/translucent only; enforced by `DS.audit()`. | Owner |
 | 2026-10-01 | Onboarding built as a mock (questions + photo + generated reveal); real generation later. | Owner |
+| 2026-10-04 | Generate 12 conversation clips for video calls via PINOC (61 credits) and drive them from a call-phase state machine (base loop + upper-body overlays). | Owner approved |
 | 2026-10-04 | Idle blinking switched off; the recolour approach looked odd to the owner. | Owner |
 | 2026-10-03 | Blink by recolouring eye splats (lid sweep + lash line) rather than by moving eyelid bones. | Experiment results |
 | 2026-10-03 | Gesture playback length follows each clip's real duration (nod no longer cut at 2.4 s). | Debugging |
@@ -325,6 +359,7 @@ app used to cut every gesture at 2.4 s, so the nod never reached its peak. Gestu
 
 ## 10. Changelog of this document
 
+- 2026-10-04 — Added R9a (real-time, human-like voice in the video call) with the proposed architecture.
 - 2026-10-03 — Simplification pass: no behaviour change. Stopped tracking `App/build-device/` (2.7k build files), split
   `web/stage.js` into modules, removed the facial-bone/blink/dark-splat experiment code (findings stay in R4/R5), merged the
   two mesh backdrops, folded `Companion`'s side tables into the struct, moved debug runners out of `RootView`.

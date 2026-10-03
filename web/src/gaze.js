@@ -28,6 +28,13 @@ export class Gaze {
 
   setActive(on) { this.active = on; if (on) { this.state = 'camera'; this.goal = { yaw: 0, pitch: 0 }; this.until = this.t + rand(1.2, 2.5); } }
 
+  /** One-off glance, e.g. 'up' while she thinks. */
+  glance(kind) {
+    if (!this.active) return;
+    this.state = 'away'; this.until = this.t + rand(1.0, 1.6);
+    this.goal = kind === 'up' ? { yaw: rand(-10, 10), pitch: rand(10, 14) } : pick(AWAY)();
+  }
+
   /** Hook the character's armature once; the hook reads this object's current angles every frame. */
   attach() {
     const character = this.getCharacter(), arm = character?.armature || character?._armature;

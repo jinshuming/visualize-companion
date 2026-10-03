@@ -53,6 +53,11 @@ final class AvatarController: NSObject {
     func nextTheme() { run("window.stage.nextTheme()") }
     func setDebug(_ on: Bool) { run("window.stage.setDebug(\(on))") }
 
+    /// Video-call behaviour: the call phase ("idle", "listening", "thinking", "speaking") and the reply's emotion
+    /// ("happy", "sad", "warm", "shy", "think", "doubt", "laugh") choose what she does with her body.
+    func callPhase(_ phase: String) { run("window.stage.callPhase('\(phase)')") }
+    func react(_ emotion: String) { run("window.stage.react('\(emotion)')") }
+
     func play(_ gesture: Gesture) {
         guard status == .loaded else { return }
         run("window.stage.gesture('\(gesture.rawValue)')")

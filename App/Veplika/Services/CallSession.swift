@@ -7,7 +7,11 @@ import Observation
 final class CallSession {
     enum Phase { case connecting, listening, thinking, speaking }
 
-    private(set) var phase: Phase = .connecting
+    private(set) var phase: Phase = .connecting { didSet { avatar?.callPhase(stagePhase) } }
+    private weak var avatar: AvatarController?
+    private var stagePhase: String {
+        switch phase { case .connecting: "idle"; case .listening: "listening"; case .thinking: "thinking"; case .speaking: "speaking" }
+    }
     private(set) var seconds = 0
     private(set) var isActive = false
     var muted = false
@@ -34,6 +38,7 @@ final class CallSession {
         guard !isActive else { return }
         isActive = true
         self.speech = speech
+        self.avatar = avatar
         speech.inCall = true
         speech.setLoudspeaker(loudspeaker)
         seconds = 0
@@ -76,7 +81,6 @@ final class CallSession {
                 guard !utterance.isEmpty else { try? await Task.sleep(for: .milliseconds(400)); continue }
 
                 phase = .thinking
-                avatar.play(.nod)
                 store.send(utterance)
                 while store.isTyping && !Task.isCancelled { try? await Task.sleep(for: .milliseconds(100)) }
                 phase = .speaking
