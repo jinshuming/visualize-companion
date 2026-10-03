@@ -16,10 +16,21 @@ struct OnboardingQuestion: Identifiable {
 }
 
 enum OnboardingStep: Int, CaseIterable {
-    case welcome, you, partner, personality, style, together, photo, generating, reveal
+    case welcome, you, partner, personality, style, together, music, photo, visual, generating, reveal
 
     /// Steps that show a progress bar (everything between welcome and generating).
-    var isQuestion: Bool { (1...5).contains(rawValue) }
+    var isQuestion: Bool { (1...8).contains(rawValue) }
+    static let progressSteps = 8
+}
+
+/// A music genre tile on the playlist step. `tint` is a `DS.Pastel` primitive, so it is already audited.
+struct MusicGenre: Identifiable {
+    let id: String
+    let symbol: String
+    let title: Bilingual
+    /// A playful one-liner shown when this genre is picked.
+    let quip: Bilingual
+    let tint: Color
 }
 
 /// New-user flow: a few questions + a reference photo, then a (currently mocked) generated companion.
@@ -30,6 +41,10 @@ final class OnboardingStore {
     var completed: Bool { didSet { UserDefaults.standard.set(completed, forKey: "onboarded") } }
     var step: OnboardingStep = .welcome
     var answers: [String: String] = [:]
+    /// Multi-select answer for the music step.
+    var music: Set<String> = []
+    /// The genre picked most recently (drives the playful reaction line).
+    private(set) var lastMusic: String?
     var photo: UIImage?
     var progress = 0.0
     var stageText = ""
@@ -97,6 +112,44 @@ final class OnboardingStore {
                 .init(id: "music", symbol: "music.note", title: Bilingual("Music & creativity", "音乐与创作")),
                 .init(id: "learning", symbol: "lightbulb.fill", title: Bilingual("Learning & ideas", "学习与点子")),
             ]),
+        .visual: OnboardingQuestion(
+            id: "visual", title: Bilingual("Last one! Which look suits them?", "最后一个！你喜欢 Ta 的什么画风？"),
+            subtitle: Bilingual("The visual style of your companion.", "伴侣的视觉风格。"),
+            options: [
+                .init(id: "realistic", symbol: "camera.aperture", title: Bilingual("Realistic", "写实"),
+                      subtitle: Bilingual("Lifelike skin, light and detail", "逼真的肤质、光影与细节")),
+                .init(id: "stylized", symbol: "cube.transparent", title: Bilingual("Stylized CG", "CG 风格化"),
+                      subtitle: Bilingual("A polished 3D-film look, a little idealised", "精致的 3D 动画电影质感，略带理想化")),
+                .init(id: "cartoon", symbol: "face.smiling", title: Bilingual("Cartoon", "卡通"),
+                      subtitle: Bilingual("Big eyes, soft shapes, full of charm", "大眼睛、圆润造型，萌趣十足")),
+            ]),
+    ]
+
+    static let musicGenres: [MusicGenre] = [
+        .init(id: "pop", symbol: "music.mic", title: Bilingual("Pop", "流行"),
+              quip: Bilingual("Hooks you can't stop humming.", "一听就停不下来的旋律。"), tint: DS.Pastel.rose),
+        .init(id: "kpop", symbol: "sparkles", title: Bilingual("K-pop / J-pop", "日韩流行"),
+              quip: Bilingual("Choreography practice, anyone?", "要不要一起练舞？"), tint: DS.Pastel.lilac),
+        .init(id: "rock", symbol: "guitars.fill", title: Bilingual("Rock", "摇滚"),
+              quip: Bilingual("Turn it up to eleven!", "音量开到最大！"), tint: DS.Pastel.coral),
+        .init(id: "electronic", symbol: "waveform", title: Bilingual("Electronic", "电子"),
+              quip: Bilingual("Feel that drop?", "感受到那个 drop 了吗？"), tint: DS.Pastel.periwinkle),
+        .init(id: "hiphop", symbol: "headphones", title: Bilingual("Hip-hop / R&B", "嘻哈 / R&B"),
+              quip: Bilingual("Smooth flow, nice.", "节奏感满分。"), tint: DS.Pastel.butter),
+        .init(id: "lofi", symbol: "cloud.moon.fill", title: Bilingual("Lo-fi & chill", "Lo-fi 放松"),
+              quip: Bilingual("Cosy beats for rainy nights.", "雨夜里最舒服的节拍。"), tint: DS.Pastel.mist),
+        .init(id: "jazz", symbol: "music.quarternote.3", title: Bilingual("Jazz & soul", "爵士 / 灵魂"),
+              quip: Bilingual("Classy. Candlelight optional.", "很有格调，烛光可选。"), tint: DS.Pastel.peach),
+        .init(id: "classical", symbol: "pianokeys", title: Bilingual("Classical", "古典"),
+              quip: Bilingual("Timeless taste.", "品味永不过时。"), tint: DS.Pastel.lavender),
+        .init(id: "folk", symbol: "leaf.fill", title: Bilingual("Folk & acoustic", "民谣 / 原声"),
+              quip: Bilingual("Just a guitar and a good story.", "一把吉他，一个好故事。"), tint: DS.Pastel.mint),
+        .init(id: "indie", symbol: "star.fill", title: Bilingual("Indie", "独立"),
+              quip: Bilingual("You probably heard them first.", "你一定比别人先听到他们。"), tint: DS.Pastel.sky),
+        .init(id: "country", symbol: "sun.horizon.fill", title: Bilingual("Country", "乡村"),
+              quip: Bilingual("Yeehaw, partner!", "嘿哈，伙计！"), tint: DS.Pastel.butter),
+        .init(id: "soundtrack", symbol: "gamecontroller.fill", title: Bilingual("Anime & game OST", "动漫 / 游戏原声"),
+              quip: Bilingual("Boss-battle energy unlocked.", "Boss 战 BGM 已就位。"), tint: DS.Pastel.lilac),
     ]
 
     var currentQuestion: OnboardingQuestion? { Self.questions[step] }
@@ -106,7 +159,8 @@ final class OnboardingStore {
         switch step {
         case .welcome: true
         case .photo: photo != nil
-        case .you, .partner, .personality, .style, .together: answerForCurrent != nil
+        case .music: !music.isEmpty
+        case .you, .partner, .personality, .style, .together, .visual: answerForCurrent != nil
         case .generating, .reveal: false
         }
     }
@@ -129,14 +183,42 @@ final class OnboardingStore {
         answers[q.id] = optionID
     }
 
+    func toggleMusic(_ id: String) {
+        if music.remove(id) == nil { music.insert(id); lastMusic = id }
+        else if lastMusic == id { lastMusic = music.first }
+    }
+
+    /// "Shuffle for me": a random handful for the undecided.
+    func shuffleMusic() {
+        let picks = Self.musicGenres.shuffled().prefix(3).map(\.id)
+        music = Set(picks)
+        lastMusic = picks.first
+    }
+
+    /// The reaction line under the vibe meter; changes as the playlist grows.
+    var musicReaction: String {
+        switch music.count {
+        case 0: return L.t("Tap everything you'd put on repeat.", "把你会单曲循环的都点上吧。")
+        case 1...3:
+            return Self.musicGenres.first { $0.id == lastMusic }?.quip.text ?? L.t("Nice pick!", "好眼光！")
+        case 4...6: return L.t("Ooh, eclectic. They'll have a lot to talk about.", "哇，口味好广！你们会有聊不完的话题。")
+        default: return L.t("You love it all — a true music lover.", "全都爱——真正的音乐迷！")
+        }
+    }
+
     // MARK: Mock generation
 
     /// Stand-in for the real pipeline: rank the existing characters against the answers.
+    /// The visual-style preference ranks first, then personality/look/activity/music overlap.
+    /// The library has no "stylized CG" character yet, so that choice falls through to trait ranking.
     func rankCandidates() -> [Companion] {
         let wanted = answers["partner"] ?? "any"
-        let wants: Set<String> = Set(["personality", "style", "together"].compactMap { answers[$0] })
+        let visual = answers["visual"]
+        let wants: Set<String> = Set(["personality", "style", "together"].compactMap { answers[$0] }).union(music)
         let pool = Companion.all.filter { wanted == "any" || $0.gender.rawValue == wanted }
         let ranked = (pool.isEmpty ? Companion.all : pool).sorted { a, b in
+            let va = a.visualStyle == visual, vb = b.visualStyle == visual
+            if va != vb { return va }
             let sa = a.traits.intersection(wants).count, sb = b.traits.intersection(wants).count
             return sa != sb ? sa > sb : a.id < b.id
         }
@@ -184,11 +266,14 @@ final class OnboardingStore {
             chat.rename(draftName)
         }
         saveReferencePhoto()
+        // Kept for the future chat brain and real generation (R1, R10).
+        UserDefaults.standard.set(music.sorted(), forKey: "pref.musicGenres")
+        UserDefaults.standard.set(answers["visual"], forKey: "pref.visualStyle")
         completed = true
     }
 
     func restart() {
-        step = .welcome; answers = [:]; photo = nil; progress = 0; candidates = []; pick = 0
+        step = .welcome; answers = [:]; music = []; lastMusic = nil; photo = nil; progress = 0; candidates = []; pick = 0
         completed = false
     }
 

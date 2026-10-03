@@ -1,6 +1,6 @@
 # Visualize Companion — Product Requirements (living document)
 
-> **Owner:** Shuming Jin (GitHub `jinshuming`) · **Created:** 2026-10-01 · **Last updated:** 2026-10-01
+> **Owner:** Shuming Jin (GitHub `jinshuming`) · **Created:** 2026-10-01 · **Last updated:** 2026-10-02
 >
 > This file is the source of truth for what the owner wants and why. Every agent (human or AI) must read it
 > **before starting work** and keep it current. If this file and a conversation disagree, the newest owner
@@ -75,6 +75,25 @@ in a room → voice call with face close-up.**
   See section 4. Needs: owner approval for credits, an upload path (PINOC `prepare_upload`), progress UI driven by
   real task state, failure/retry UX, and a consent line about the photo leaving the device.
 - Character library is thin on male options (1). Real generation removes this limit.
+
+### R1a — Music taste and visual-style preference in onboarding **[Owner]** (2026-10-02)
+> When a new user enters the app, let them choose the music genres they like, and make the whole selection process
+> lighter and more fun. At the end, add a choice for the partner's visual style: realistic, CG stylized, cartoon.
+
+- **Status: Mock, Unverified** (written without a build; needs an Xcode build and a run on the owner's iPhone).
+- Flow is now: welcome → 5 questions → **music** → photo → **visual style (last choice)** → generating → reveal.
+- **Music step:** multi-select sticker wall of 12 genres (pop, K-pop/J-pop, rock, electronic, hip-hop/R&B, lo-fi,
+  jazz/soul, classical, folk/acoustic, indie, country, anime & game OST). Playful touches: tiles bounce, tilt like
+  stickers and pop a floating note; a pastel equalizer "vibe meter" dances harder as more genres are picked; a
+  reaction line answers each pick; "Shuffle for me" picks three at random; haptics on select. At least one required.
+- **Visual-style step:** Realistic / Stylized CG / Cartoon cards, previewed with matching library characters.
+  The library has **no stylized-CG character yet**, so that card shows a symbol and the matcher falls back to traits.
+  Current mapping: `realistic` = Chloe, Jolene, Sam; `cartoon` = the chibi characters.
+- The mock matcher ranks visual-style match first, then personality/look/activity/**music** overlap (genre tags in
+  `Companion.tagTable`). Choices are saved to `UserDefaults` (`pref.musicGenres`, `pref.visualStyle`) for the future
+  chat brain (R10) and real generation (R1).
+- **Planned:** pass visual style to PINOC generation (prompt/style control — capability not yet verified), let music
+  taste flavour persona and conversation topics, add dedicated preview art for each style (incl. a stylized-CG character).
 
 ### R2 — Highest-quality Gaussian character **[Owner]**
 > I need the highest-quality character (the highest-quality Gaussian human).
@@ -247,10 +266,12 @@ in a room → voice call with face close-up.**
 | 2026-10-01 | No saturated colour anywhere; pastel/translucent only; enforced by `DS.audit()`. | Owner |
 | 2026-10-01 | Onboarding built as a mock (questions + photo + generated reveal); real generation later. | Owner |
 | 2026-10-01 | Skip TestFlight for now. Do not upload to the company Apple team without explicit approval. | Owner |
+| 2026-10-02 | Onboarding asks for favourite music genres (fun, light multi-select) and, as the last choice, the partner's visual style: realistic / CG stylized / cartoon. | Owner |
 
 ---
 
 ## 10. Changelog of this document
 
+- 2026-10-02 — Added R1a (music taste + visual-style preference in onboarding).
 - 2026-10-01 — Created from the owner's product brief (onboarding flow; highest-quality characters, rich motion and
   expression control, conversation-driven behaviour, most nuanced TTS) plus project history and verified facts.

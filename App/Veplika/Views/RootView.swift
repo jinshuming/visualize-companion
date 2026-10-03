@@ -87,7 +87,9 @@ struct RootView: View {
             // `-onboardingAuto`: fill answers + sample photo, generate, then finish. For scripted checks.
             guard ProcessInfo.processInfo.arguments.contains("-onboardingAuto") else { return }
             while avatar.status != .ready && avatar.status != .loaded { try? await Task.sleep(for: .milliseconds(200)) }
-            onboarding.answers = ["you": "female", "partner": "female", "personality": "gentle", "style": "sweet", "together": "talk"]
+            onboarding.answers = ["you": "female", "partner": "female", "personality": "gentle", "style": "sweet", "together": "talk",
+                                  "visual": "cartoon"]
+            onboarding.music = ["lofi", "pop"]
             onboarding.photo = Companion.all.first?.thumbnail
             await onboarding.generate(chat: store)
             try? await Task.sleep(for: .seconds(2))
