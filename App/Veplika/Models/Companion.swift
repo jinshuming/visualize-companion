@@ -97,6 +97,14 @@ struct Companion: Identifiable, Hashable {
                   greetingText: Bilingual("Hey, you! Perfect timing, I just got back from a rooftop run. What's up?", "嘿，是你！来得正好，我刚从屋顶跑完一圈回来。怎么啦？"),
                   callGreetingText: Bilingual("Hey! Swinging by to listen. Go ahead, I'm all ears.", "嘿！我来听你说啦。说吧，我听着呢。"),
                   style: .realistic, stylized: true),
+        Companion(id: "punk", baseName: "Vex",
+                  taglineText: Bilingual("Purple punk", "紫发朋克"),
+                  personalityText: Bilingual("Edgy, loud, fiercely loyal", "叛逆、张扬，对在乎的人格外忠诚"),
+                  accentHex: 0xD0B8F0, secondaryHex: 0xF0BCD8,
+                  gender: .female, traits: ["cool", "confident", "playful", "rock", "electronic", "hiphop", "indie"],
+                  greetingText: Bilingual("Yo, there you are. Turn it up, tell me everything.", "哟，你终于来了。把音量调大，什么都跟我说。"),
+                  callGreetingText: Bilingual("Hey, it's me. Go ahead, I'm listening.", "嘿，是我。说吧，我听着。"),
+                  style: .realistic, stylized: true),
     ]
 
     enum Gender: String { case female, male }
