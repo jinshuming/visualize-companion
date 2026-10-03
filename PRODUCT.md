@@ -112,6 +112,15 @@ in a room → voice call with face close-up.**
   engine supports bone-masked layers); text-to-motion for gaps (`generate_motion`, 1 credit/second, owner approval);
   proper blending that handles yaw.
 
+- **Video-call liveliness — Done in simulator, Unverified on device (2026-10-04).** Owner asked for real-call feel instead of a
+  static, stiff picture. In call mode only: (1) **hand-held camera** (`camera.js`): slow arm drift, mid wobble and faint
+  tremor on position and rotation, eased in/out; (2) **wandering gaze** (`gaze.js`): looks at the camera 1.8-4.5 s, then
+  glances away (side, down, up) for 0.7-2 s and returns; eyes lead with quick saccades, head and neck follow slowly, plus
+  micro-saccades. Driven by rotating `neck_01/neck_02/head` and `FACIAL_L/R_EyeParallel` through the engine's post-clamp hook.
+  Measured axes on Chloe: head yaw = z, pitch = y; eyes yaw = y, pitch = x.
+  - **Limits:** chibi characters have painted eyes, so only the head moves (eyes do not); axes measured on one realistic character
+    only; not linked to speech/emotion yet; behaviour is random, not conversation-driven (R5).
+
 ### R4 — Controllable facial expression **[Owner]**
 > Expressions can be controlled.
 
@@ -133,7 +142,9 @@ in a room → voice call with face close-up.**
   `{ text, emotion, intensity, gesture, gaze }`, which drives R3/R4 and the TTS style (R6). Include idle behaviours
   (breathing, blinking, gaze shifts, listening posture) so she is never frozen while the user speaks.
 
-- **Idle blinking — Done in simulator, Unverified on device (2026-10-03).** Owner asked for human-like timed blinking.
+- **Idle blinking — DISABLED (2026-10-04).** The owner found the recoloured blink looks odd, so it is off by default
+  (`Blinker.enabled = false`; the code stays for a rework, e.g. real lid geometry). Original notes follow.
+- **Idle blinking (previous state) — Done in simulator, Unverified on device (2026-10-03).** Owner asked for human-like timed blinking.
   Every character now blinks on a natural schedule: ~15/min with random 2–6.5 s gaps, 12 % double blinks, close ≈75 ms,
   hold ≈35 ms, open ≈140 ms (`stage.js`: `blinkTick`, `setBlinking(on)`).
   - **How:** the eyeball Gaussians (those weighted to `FACIAL_L/R_EyeParallel`, ~1.2 k splats) are recoloured at runtime —
@@ -304,6 +315,7 @@ app used to cut every gesture at 2.4 s, so the nod never reached its peak. Gestu
 | 2026-10-01 | Default render resolution 2× with automatic step-down. | Perf data on iPhone 13 Pro |
 | 2026-10-01 | No saturated colour anywhere; pastel/translucent only; enforced by `DS.audit()`. | Owner |
 | 2026-10-01 | Onboarding built as a mock (questions + photo + generated reveal); real generation later. | Owner |
+| 2026-10-04 | Idle blinking switched off; the recolour approach looked odd to the owner. | Owner |
 | 2026-10-03 | Blink by recolouring eye splats (lid sweep + lash line) rather than by moving eyelid bones. | Experiment results |
 | 2026-10-03 | Gesture playback length follows each clip's real duration (nod no longer cut at 2.4 s). | Debugging |
 | 2026-10-01 | Skip TestFlight for now. Do not upload to the company Apple team without explicit approval. | Owner |

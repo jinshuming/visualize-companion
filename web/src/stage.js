@@ -6,6 +6,7 @@ import { Scene, Character, Animation } from '@viggle/splat-engine';
 import { buildRoom, setRoomVisible, THEMES } from './room.js';
 import { initCamera, cameraTick, setMode, setProfile, orbit, zoom, resetOrbit, frameThumb } from './camera.js';
 import { Blinker } from './blink.js';
+import { Gaze } from './gaze.js';
 import { Perf } from './perf.js';
 
 const post = (m) => window.webkit?.messageHandlers?.stage?.postMessage(m);
@@ -16,7 +17,7 @@ const T0 = performance.now();
 const marks = {};
 const mark = (k) => { marks[k] = Math.round(performance.now() - T0); };
 
-let scene, app, character, blinker, perf;
+let scene, app, character, blinker, gaze, perf;
 
 // ---------------------------------------------------------------------------
 // Backend selection. Splats live in rgba32float textures sampled with a filtering sampler,
@@ -100,17 +101,21 @@ async function init() {
   mark('roomBuilt');
   initCamera(scene);
   blinker = new Blinker(scene, post, () => character);
+  gaze = new Gaze(scene, () => character);
   app.on('update', cameraTick);
-  app.on('update', (dt) => blinker.tick(dt));
-  perf = new Perf({ app, post, marks, backend, drive: { setTheme, setMode, orbit, gesture } });
+  app.on('update', (dt) => { blinker.tick(dt); gaze.tick(dt); });
+  perf = new Perf({ app, post, marks, backend, drive: { setTheme, setMode: setStageMode, orbit, gesture } });
   scene.start();
   await Promise.all(MOTIONS.map((m) => Animation.loadGlb(scene, `${BASE}motions/${m}.glb`, m)));
   mark('motionsLoaded');
   post({ type: 'ready' });
 }
 
+// Video calls get the lively behaviour (hand-held camera, wandering gaze); chat and space stay steady.
+function setStageMode(name, instant) { setMode(name, instant); gaze?.setActive(name === 'call'); }
+
 window.stage = {
-  load, gesture, setMode, orbit, zoom, resetOrbit, setTheme,
+  load, gesture, setMode: setStageMode, orbit, zoom, resetOrbit, setTheme,
   nextTheme: () => setTheme(themeIndex + 1),
   setBlinking: (on) => blinker?.setEnabled(on),
   setDebug: (on) => perf?.setBadge(on),

@@ -60,6 +60,7 @@ final class AvatarController: NSObject {
 
     #if DEBUG
     func thumbPrep(dist: Double, ty: Double) { run("window.stage.thumbPrep(\(dist), \(ty))") }
+    func debugEval(_ js: String) { run(js) }
     func setClear(_ hex: String) { run("window.stage.setClear('\(hex)')") }
 
     /// Runs the web stage's scripted frame-rate probe and returns its JSON report.

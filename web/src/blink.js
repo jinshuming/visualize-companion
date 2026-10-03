@@ -86,7 +86,8 @@ const easeIn = (x) => x * x, easeOut = (x) => 1 - (1 - x) * (1 - x);
 
 export class Blinker {
   constructor(scene, post, getCharacter) {
-    Object.assign(this, { scene, post, getCharacter, enabled: true });
+    // Off by default: the owner found the recoloured blink looks odd (2026-10-04). `setEnabled(true)` brings it back.
+    Object.assign(this, { scene, post, getCharacter, enabled: false });
     this.reset();
   }
 
