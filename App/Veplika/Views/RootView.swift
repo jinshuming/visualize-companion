@@ -84,6 +84,16 @@ struct RootView: View {
             try? "done".write(to: state, atomically: true, encoding: .utf8)
         }
         .task {
+            // `-debugClip nod -debugMs 700 -debugMode call`: freeze a clip mid-way for pose inspection.
+            guard let clip = UserDefaults.standard.string(forKey: "debugClip") else { return }
+            while avatar.status != .loaded { try? await Task.sleep(for: .milliseconds(200)) }
+            try? await Task.sleep(for: .seconds(1.5))
+            avatar.setMode(UserDefaults.standard.string(forKey: "debugMode") ?? "call")
+            try? await Task.sleep(for: .seconds(1.5))
+            if UserDefaults.standard.bool(forKey: "debugHideDark") { avatar.darkFilter(true) }
+            avatar.debugPose(clip, ms: UserDefaults.standard.integer(forKey: "debugMs"))
+        }
+        .task {
             // `-onboardingAuto`: fill answers + sample photo, generate, then finish. For scripted checks.
             guard ProcessInfo.processInfo.arguments.contains("-onboardingAuto") else { return }
             while avatar.status != .ready && avatar.status != .loaded { try? await Task.sleep(for: .milliseconds(200)) }

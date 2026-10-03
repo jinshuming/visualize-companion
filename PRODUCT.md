@@ -1,6 +1,6 @@
 # Visualize Companion — Product Requirements (living document)
 
-> **Owner:** Shuming Jin (GitHub `jinshuming`) · **Created:** 2026-10-01 · **Last updated:** 2026-10-02
+> **Owner:** Shuming Jin (GitHub `jinshuming`) · **Created:** 2026-10-01 · **Last updated:** 2026-10-03
 >
 > This file is the source of truth for what the owner wants and why. Every agent (human or AI) must read it
 > **before starting work** and keep it current. If this file and a conversation disagree, the newest owner
@@ -115,12 +115,15 @@ in a room → voice call with face close-up.**
 ### R4 — Controllable facial expression **[Owner]**
 > Expressions can be controlled.
 
-- **Status: Blocked / Unverified.** The engine reports support for a **441-bone full-body + facial rig** and loads
-  MetaHuman motion GLBs, but there is **no blendshape, viseme, or expression API** in `@viggle/splat-engine` 0.1.1.
-  Whether PINOC characters have facial bones with usable splat weights is **not yet tested**.
-- **Next step:** an experiment — drive facial bones (jaw, brows, eyelids, mouth corners) on a loaded character and
-  see if the splat face deforms believably. Outcome decides whether expression comes from bones, from a PINOC feature,
-  or needs engine work. Record the result here.
+- **Status: Partially verified (2026-10-03).** The engine has **no blendshape, viseme or expression API**
+  (`@viggle/splat-engine` 0.1.1), but the characters themselves are skinned to the **441-bone full-body + facial rig**.
+  Measured on Chloe (47,343 splats, 4 bone influences each): face and neck splats carry weights on `FACIAL_*` bones
+  (e.g. jawline splats mix `head` ≈0.6 with `FACIAL_L_12IPV_Jawline3/6`, `CheekL4`; also `FACIAL_C_Jaw`, `ChinS4`,
+  `NeckA*`, `LowerLipRotation`). The MetaHuman motion GLBs carry tracks for all 882 channels, facial included.
+- **So driving expression through facial bones is feasible in principle.** Not yet done: pose those bones from code
+  (jaw open, brows, lids, mouth corners), define an expression set (neutral, smile, sad, surprised, …) with intensity,
+  and check that the splat face deforms believably (candy-wrapper/stretch artifacts are the risk).
+- **Next step:** the expression experiment above, on one realistic and one chibi character. Record results here.
 
 ### R5 — Conversation-driven body language and expression **[Owner]**
 > Based on the conversation, the character shows different body movements and expressions.
@@ -182,6 +185,23 @@ in a room → voice call with face close-up.**
 - No facial-expression / viseme API. No native iOS renderer — the app renders in a `WKWebView`.
 - **iOS must use WebGL2.** iPhone WebGPU lacks `float32-filterable`, so splat characters fail to draw while the scene
   looks fine. The app probes the adapter and forces WebGL2 on iOS. (Bug found on the owner's iPhone 13 Pro.)
+
+**Splat data model** (inspected on Chloe, 2026-10-03)
+- Each splat has position, opacity, rotation, scale and **only a DC colour** (`f_dc_0..2`) — no spherical harmonics, no
+  normals. Colour is fixed per splat; the engine multiplies it by a scene light factor (ambient + sun/point lights +
+  optional shadow map) but cannot re-light by surface orientation.
+- Consequence: lighting/shadow **baked into the capture stays baked** and does not follow articulation.
+
+**Known artifact — dark band under the chin when the head lowers** (reported by the owner, 2026-10-03)
+- Reproduced on Chloe at the peak of the nod (≈3.2–3.6 s): a darker brown band under the jaw/neck. Likely cause: the
+  contact shadow under the chin is baked into the neck/jaw skin colours and does not re-light as the head moves.
+- A tempting explanation was ruled out: 373 near-black (luminance < 0.32), small, mostly-opaque splats sit in the chin
+  band, but hiding them (engine variant mask) changed the under-chin brightness by ~0.3/255 — not the cause.
+- Not yet tested: re-colouring the under-chin/neck splats at asset level, limiting nod amplitude, and a PINOC
+  regeneration or refine pass. Treat as an R2 (quality) item.
+
+**Gesture timing bug found while debugging.** Clip lengths are wave 1.67 s, nod 3.67 s, clap 1.17 s, cheer 2.50 s; the
+app used to cut every gesture at 2.4 s, so the nod never reached its peak. Gesture lengths now follow the clips.
 
 **Performance** (iPhone 13 Pro, WebGL2, measured with the in-app probe)
 - 60 fps, 0 janky frames in chat, gesture, space idle, space orbit and call close-up at the default 2× resolution (1.32 MP).
@@ -265,6 +285,7 @@ in a room → voice call with face close-up.**
 | 2026-10-01 | Default render resolution 2× with automatic step-down. | Perf data on iPhone 13 Pro |
 | 2026-10-01 | No saturated colour anywhere; pastel/translucent only; enforced by `DS.audit()`. | Owner |
 | 2026-10-01 | Onboarding built as a mock (questions + photo + generated reveal); real generation later. | Owner |
+| 2026-10-03 | Gesture playback length follows each clip's real duration (nod no longer cut at 2.4 s). | Debugging |
 | 2026-10-01 | Skip TestFlight for now. Do not upload to the company Apple team without explicit approval. | Owner |
 | 2026-10-02 | Onboarding asks for favourite music genres (fun, light multi-select) and, as the last choice, the partner's visual style: realistic / CG stylized / cartoon. | Owner |
 
@@ -272,6 +293,8 @@ in a room → voice call with face close-up.**
 
 ## 10. Changelog of this document
 
+- 2026-10-03 — R4 upgraded to Partially verified (facial bones are weighted); added splat data model, the under-chin
+  shadow investigation, and the gesture-timing finding.
 - 2026-10-02 — Added R1a (music taste + visual-style preference in onboarding).
 - 2026-10-01 — Created from the owner's product brief (onboarding flow; highest-quality characters, rich motion and
   expression control, conversation-driven behaviour, most nuanced TTS) plus project history and verified facts.

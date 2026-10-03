@@ -60,6 +60,8 @@ final class AvatarController: NSObject {
     }
 
     #if DEBUG
+    func darkFilter(_ on: Bool) { run("window.stage.darkFilter(\(on))") }
+    func debugPose(_ clip: String, ms: Int) { run("window.stage.debugPose('\(clip)', \(ms))") }
     func thumbPrep(dist: Double, ty: Double) { run("window.stage.thumbPrep(\(dist), \(ty))") }
     func setClear(_ hex: String) { run("window.stage.setClear('\(hex)')") }
 

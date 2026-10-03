@@ -248,8 +248,12 @@ async function load(id, profile = 'chibi') {
   post({ type: 'loaded', id });
 }
 
+// Real clip lengths (s): wave 1.67, nod 3.67 (the head dips at ~3.2-3.6 s), clap 1.17, cheer 2.50.
+// A gesture must run its full length or the nod is cut off before it reaches its peak.
+const CLIP_MS = { wave: 1800, nod: 3800, clap: 2400, cheer: 2600 };
+
 // Play a one-shot gesture, then settle back into idle.
-function gesture(name, ms = 2400) {
+function gesture(name, ms = CLIP_MS[name] ?? 2400) {
   if (!character) return;
   playClip(name, name === 'clap' || name === 'cheer');
   clearTimeout(gesture.t);
