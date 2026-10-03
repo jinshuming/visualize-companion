@@ -60,6 +60,8 @@ final class AvatarController: NSObject {
     }
 
     #if DEBUG
+    func faceExperiment(_ mode: String, _ axis: String, _ amount: Double) { run("window.stage.faceExperiment('\(mode)', '\(axis)', \(amount))") }
+    func blinkExperiment(_ closure: Double) { run("window.stage.blinkExperiment(\(closure))") }
     func darkFilter(_ on: Bool) { run("window.stage.darkFilter(\(on))") }
     func debugPose(_ clip: String, ms: Int) { run("window.stage.debugPose('\(clip)', \(ms))") }
     func thumbPrep(dist: Double, ty: Double) { run("window.stage.thumbPrep(\(dist), \(ty))") }
@@ -95,6 +97,7 @@ final class AvatarController: NSObject {
             status = .loaded
             play(.wave)
         case "error": status = .failed(dict["message"] as? String ?? "unknown")
+        case "log": debugLog(dict["message"] as? String ?? "")
         default: break
         }
     }

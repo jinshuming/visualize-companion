@@ -133,6 +133,23 @@ in a room → voice call with face close-up.**
   `{ text, emotion, intensity, gesture, gaze }`, which drives R3/R4 and the TTS style (R6). Include idle behaviours
   (breathing, blinking, gaze shifts, listening posture) so she is never frozen while the user speaks.
 
+- **Idle blinking — Done in simulator, Unverified on device (2026-10-03).** Owner asked for human-like timed blinking.
+  Every character now blinks on a natural schedule: ~15/min with random 2–6.5 s gaps, 12 % double blinks, close ≈75 ms,
+  hold ≈35 ms, open ≈140 ms (`stage.js`: `blinkTick`, `setBlinking(on)`).
+  - **How:** the eyeball Gaussians (those weighted to `FACIAL_L/R_EyeParallel`, ~1.2 k splats) are recoloured at runtime —
+    an "upper lid" sweeps down in the local skin colour with a thin lash line on its edge, then reverses. The colour
+    texture is updated by writing only the eye texels into an in-memory copy and uploading it (≈0.2 ms/frame in the
+    simulator; a full `updateColorData` cost ≈1.7 ms).
+  - **Why not eyelid bones:** tested on Chloe — rotating `EyelidUpper/Lower*` bones about z narrows the eye at ~35° and
+    smears it at larger angles (the lids carry few splats and cannot cover the eyeball); x/y give distortion; scaling the eye
+    bones does nothing visible; on chibi characters (Mina, Neko) the painted eyes did not respond at all.
+  - **Looks right on:** Chloe, Jolene, Mina, Neko (inspected). **Not inspected:** Sam, Leo, Riko.
+  - **Known limits:** the closed eye is a skin-coloured patch with a lash line, not real eyelid geometry; faint iris ghosting
+    and slightly pale tone can remain; it recolours the rest-pose eye region so extreme head poses are untested; it only
+    affects the currently rendered LOD (all current characters are single-LOD).
+  - **Next:** measure cost and frame rate on the owner's iPhone; eyelid shape/lash polish; link blink rate to emotion
+    (slower when calm, faster when nervous), gaze shifts and micro-saccades.
+
 ### R6 — The most emotionally nuanced TTS **[Owner]**
 > Voice emotion should be as subtle as possible.
 
@@ -285,6 +302,7 @@ app used to cut every gesture at 2.4 s, so the nod never reached its peak. Gestu
 | 2026-10-01 | Default render resolution 2× with automatic step-down. | Perf data on iPhone 13 Pro |
 | 2026-10-01 | No saturated colour anywhere; pastel/translucent only; enforced by `DS.audit()`. | Owner |
 | 2026-10-01 | Onboarding built as a mock (questions + photo + generated reveal); real generation later. | Owner |
+| 2026-10-03 | Blink by recolouring eye splats (lid sweep + lash line) rather than by moving eyelid bones. | Experiment results |
 | 2026-10-03 | Gesture playback length follows each clip's real duration (nod no longer cut at 2.4 s). | Debugging |
 | 2026-10-01 | Skip TestFlight for now. Do not upload to the company Apple team without explicit approval. | Owner |
 | 2026-10-02 | Onboarding asks for favourite music genres (fun, light multi-select) and, as the last choice, the partner's visual style: realistic / CG stylized / cartoon. | Owner |
@@ -293,6 +311,7 @@ app used to cut every gesture at 2.4 s, so the nod never reached its peak. Gestu
 
 ## 10. Changelog of this document
 
+- 2026-10-03 — Added idle blinking under R5 with the eyelid-bone experiment results.
 - 2026-10-03 — R4 upgraded to Partially verified (facial bones are weighted); added splat data model, the under-chin
   shadow investigation, and the gesture-timing finding.
 - 2026-10-02 — Added R1a (music taste + visual-style preference in onboarding).

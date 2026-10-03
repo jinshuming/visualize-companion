@@ -244,6 +244,7 @@ async function load(id, profile = 'chibi') {
   if (character) { try { character.destroy?.(); } catch {} }
   character = next;
   playClip('idle', true);
+  resetBlink();
   mark('charLoaded:' + id);
   post({ type: 'loaded', id });
 }
@@ -288,6 +289,7 @@ async function init() {
   mark('roomBuilt');
   setMode('chat', true);
   app.on('update', tick);
+  app.on('update', blinkTick);
   setPixelRatio(RATIOS[0]);
   scene.start();
   startAdaptiveQuality();
@@ -441,7 +443,195 @@ function thumbPrep(dist, ty) {
 }
 function setClear(hex) { scene.cameraEntity.camera.clearColor = new pc.Color().fromString(hex); }
 
+// ---------------------------------------------------------------------------
+// Procedural facial layer. The engine evaluates the clip, then calls armature._applyRigPostClamps
+// right before skinning; wrapping it lets us nudge facial bones on top of any animation.
+// ---------------------------------------------------------------------------
+const FACE = { mode: 'off', axis: 'x', amount: 0, closure: 0, upper: [], lower: [], eyes: [] };
+
+function indexBones(re) {
+  const names = scene.skeletonLibrary.boneNames441;
+  return names.map((n, i) => [n, i]).filter(([n]) => re.test(n)).map(([, i]) => i);
+}
+
+function installFaceLayer() {
+  const arm = character.armature || character._armature;
+  if (arm.__faceLayer) return { upper: FACE.upper.length, lower: FACE.lower.length, eyes: FACE.eyes.length };
+  arm.__faceLayer = true;
+  FACE.upper = indexBones(/^FACIAL_[LR]_EyelidUpper[AB]\d?$/);
+  FACE.lower = indexBones(/^FACIAL_[LR]_EyelidLower[AB]\d?$/);
+  FACE.eyes = indexBones(/^FACIAL_[LR]_EyeParallel$/);
+  const orig = arm._applyRigPostClamps.bind(arm);
+  const q = new pc.Quat();
+  const AX = { x: new pc.Vec3(1, 0, 0), y: new pc.Vec3(0, 1, 0), z: new pc.Vec3(0, 0, 1) };
+  arm._applyRigPostClamps = function (...a) {
+    orig(...a);
+    if (FACE.mode === 'off' || FACE.closure <= 0) return;
+    const pose = arm._currentPose, k = FACE.closure;
+    if (FACE.mode === 'rot') {
+      for (const bi of FACE.upper) { q.setFromAxisAngle(AX[FACE.axis], FACE.amount * k); pose.rotations[bi].mul(q); }
+      for (const bi of FACE.lower) { q.setFromAxisAngle(AX[FACE.axis], -FACE.amount * 0.6 * k); pose.rotations[bi].mul(q); }
+    } else if (FACE.mode === 'scale') {
+      for (const bi of FACE.eyes) pose.scales[bi][FACE.axis] = 1 + (FACE.amount - 1) * k;
+    }
+  };
+  return { upper: FACE.upper.length, lower: FACE.lower.length, eyes: FACE.eyes.length };
+}
+
+function faceExperiment(mode, axis, amount) {
+  const info = installFaceLayer();
+  Object.assign(FACE, { mode, axis, amount, closure: 1 });
+  return info;
+}
+
+// ---------------------------------------------------------------------------
+// Blinking by recolouring. The eyes are Gaussians skinned to FACIAL_*_EyeParallel; the lids are too sparse to
+// cover them by moving eyelid bones. Instead, ease the eyeball splats toward the local skin colour and darken a
+// thin line where the lash line would be, then restore. Works for realistic and chibi characters alike.
+// ---------------------------------------------------------------------------
+const BLINK = { ready: false, closure: 0, idx: null, base: null, skin: null, lash: null, isLine: null, el: null, res: null };
+const SH_C0 = 0.28209479177387814;
+
+function setupBlink() {
+  const sp = character.splat, el = sp.splatData.elements[0];
+  const get = (n) => { const p = el.properties.find((q) => q.name === n); return p.storage || p.data || p.array; };
+  const X = get('x'), Y = get('y'), Z = get('z'), F0 = get('f_dc_0'), F1 = get('f_dc_1'), F2 = get('f_dc_2');
+  const bn = scene.skeletonLibrary.boneNames441, sw = sp.splatWeights, N = el.count;
+  // Splats whose EyeParallel influence is substantial, per side.
+  const sides = { L: [], R: [] };
+  for (let i = 0; i < N; i++) {
+    let wl = 0, wr = 0;
+    for (let k = 0; k < 4; k++) {
+      const n = bn[sw.indices[i * 4 + k]], w = sw.weights[i * 4 + k];
+      if (n === 'FACIAL_L_EyeParallel') wl += w; else if (n === 'FACIAL_R_EyeParallel') wr += w;
+    }
+    if (wl > 0.35) sides.L.push(i); else if (wr > 0.35) sides.R.push(i);
+  }
+  const rgb = (i) => [0.5 + SH_C0 * F0[i], 0.5 + SH_C0 * F1[i], 0.5 + SH_C0 * F2[i]];
+  const pct = (arr, p) => { const a = Float32Array.from(arr).sort(); return a[Math.min(a.length - 1, Math.max(0, Math.floor(p * a.length)))]; };
+  const idx = [], h = [], skin = [], base = [];
+  for (const side of ['L', 'R']) {
+    const eye = sides[side]; if (eye.length < 20) continue;
+    const ys = eye.map((i) => Y[i]), xs = eye.map((i) => X[i]);
+    const y0 = pct(ys, 0.06), y1 = pct(ys, 0.94), x0 = pct(xs, 0.04), x1 = pct(xs, 0.96);
+    const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, zRef = Z[eye[Math.floor(eye.length / 2)]];
+    // Local skin colour: median of nearby non-eye, mid-to-light splats.
+    const isEye = new Set(eye), ch = [[], [], []];
+    for (let i = 0; i < N; i++) {
+      if (isEye.has(i)) continue;
+      if (Math.abs(X[i] - cx) < (x1 - x0) * 1.1 && Math.abs(Y[i] - cy) < (y1 - y0) * 1.6 && Math.abs(Z[i] - zRef) < 0.06) {
+        const c = rgb(i), lum = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+        if (lum > 0.45 && lum < 0.97 && c[0] >= c[2]) { ch[0].push(c[0]); ch[1].push(c[1]); ch[2].push(c[2]); }
+      }
+    }
+    const med = (a) => { a = Float32Array.from(a).sort(); return a.length ? a[Math.floor(a.length / 2)] : 0.8; };
+    const sk = [med(ch[0]), med(ch[1]), med(ch[2])];
+    for (const i of eye) {
+      if (Y[i] < y0 - (y1 - y0) * 0.1 || Y[i] > y1 + (y1 - y0) * 0.1) continue; // drop outliers (under-eye shadow etc.)
+      idx.push(i); h.push(Math.max(0, Math.min(1, (Y[i] - y0) / (y1 - y0)))); base.push(...rgb(i)); skin.push(...sk);
+    }
+  }
+  BLINK.idx = Int32Array.from(idx); BLINK.base = Float32Array.from(base); BLINK.skin = Float32Array.from(skin);
+  BLINK.h = Float32Array.from(h); BLINK.lash = [0.22, 0.14, 0.12];
+  BLINK.F = [F0, F1, F2]; BLINK.el = sp.splatData; BLINK.res = sp.asset?.resource || null; BLINK.ready = true; BLINK.closure = 0;
+  // Own copy of the whole colour texture (RGBA half floats) so each blink frame is a memcpy plus ~1k texel writes.
+  const O = get('opacity'), f2h = pc.FloatPacking.float2Half;
+  BLINK.full = new Uint16Array(N * 4);
+  for (let i = 0; i < N; i++) {
+    BLINK.full[i * 4] = f2h(F0[i] * SH_C0 + 0.5); BLINK.full[i * 4 + 1] = f2h(F1[i] * SH_C0 + 0.5);
+    BLINK.full[i * 4 + 2] = f2h(F2[i] * SH_C0 + 0.5); BLINK.full[i * 4 + 3] = f2h(1 / (1 + Math.exp(-O[i])));
+  }
+  BLINK.fastOK = undefined;
+  return { eyeSplats: idx.length, hasUpdate: !!(BLINK.res && BLINK.res.updateColorData) };
+}
+
+// The upper lid sweeps down: splats above `edge` are lid (skin colour); a thin dark lash line rides the edge.
+// Fast path: write only the eye texels into the colour texture (full updateColorData rewrites all ~47k splats).
+const BLINK_COST = { n: 0, ms: 0 };
+function applyBlink(c) {
+  if (!BLINK.ready || !BLINK.res) return;
+  const t0 = performance.now();
+  BLINK.closure = c;
+  const [F0, F1, F2] = BLINK.F, n = BLINK.idx.length, edge = 1 - c * 1.1;
+  const sm = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+  for (let j = 0; j < n; j++) {
+    const i = BLINK.idx[j], hj = BLINK.h[j];
+    const cover = c <= 0 ? 0 : sm(edge - 0.04, edge + 0.04, hj);
+    const line = c <= 0 ? 0 : Math.max(0, 1 - Math.abs(hj - (edge - 0.02)) / 0.13) * Math.min(1, c * 2.2);
+    let r = BLINK.base[j * 3], g = BLINK.base[j * 3 + 1], b = BLINK.base[j * 3 + 2];
+    r += (BLINK.skin[j * 3] - r) * cover; g += (BLINK.skin[j * 3 + 1] - g) * cover; b += (BLINK.skin[j * 3 + 2] - b) * cover;
+    r += (BLINK.lash[0] - r) * line; g += (BLINK.lash[1] - g) * line; b += (BLINK.lash[2] - b) * line;
+    F0[i] = (r - 0.5) / SH_C0; F1[i] = (g - 0.5) / SH_C0; F2[i] = (b - 0.5) / SH_C0;
+  }
+  let fast = false;
+  const tex = BLINK.res.streams?.getTexture?.('splatColor');
+  if (tex && BLINK.fastOK !== false) {
+    const h = pc.FloatPacking.float2Half, full = BLINK.full;
+    for (let j = 0; j < n; j++) {
+      const i = BLINK.idx[j];
+      full[i * 4] = h(F0[i] * SH_C0 + 0.5); full[i * 4 + 1] = h(F1[i] * SH_C0 + 0.5); full[i * 4 + 2] = h(F2[i] * SH_C0 + 0.5);
+    }
+    const data = tex.lock();
+    if (data && data.length >= full.length && data instanceof Uint16Array) { data.set(full); fast = true; }
+    else if (BLINK.fastOK === undefined) { BLINK.fastOK = false; post({ type: 'log', message: 'blink fast path unavailable' }); }
+    tex.unlock();
+    if (fast && BLINK.fastOK === undefined) { BLINK.fastOK = true; post({ type: 'log', message: 'blink fast path on' }); }
+  }
+  if (!fast) BLINK.res.updateColorData(BLINK.el);
+  BLINK_COST.n++; BLINK_COST.ms += performance.now() - t0;
+}
+
+// Human-like blink scheduler: ~15 blinks/min with natural jitter, occasional double blinks.
+// A blink is fast: close ~75 ms, hold ~35 ms, open ~140 ms (opening is slower than closing).
+const BL = { enabled: true, t: 0, next: 2.0, phase: 'idle', p: 0, last: 0, second: false };
+const easeIn = (x) => x * x, easeOut = (x) => 1 - (1 - x) * (1 - x);
+function scheduleBlink(delay) { BL.next = BL.t + (delay ?? 2.0 + Math.random() * 4.5); }
+
+function resetBlink() { BLINK.ready = false; BL.phase = 'idle'; BL.last = 0; BL.second = false; scheduleBlink(1.8); }
+
+function blinkTick(dt) {
+  if (!BL.enabled || !character || document.hidden) return;
+  BL.t += dt;
+  if (!BLINK.ready) {
+    if (BL.t < BL.next) return;
+    try {
+      const info = setupBlink();
+      post({ type: 'log', message: 'blink ready ' + JSON.stringify({ ...info, lods: character.splats?.length }) });
+    } catch (e) { BL.enabled = false; post({ type: 'log', message: 'blink setup failed: ' + e }); return; }
+    scheduleBlink(0.4);
+  }
+  let c = BL.last;
+  if (BL.phase === 'idle') {
+    if (BL.t < BL.next) return;
+    BL.phase = 'close'; BL.p = 0;
+  }
+  if (BL.phase === 'close') { BL.p += dt / 0.075; c = easeIn(Math.min(1, BL.p)); if (BL.p >= 1) { BL.phase = 'hold'; BL.p = 0; } }
+  else if (BL.phase === 'hold') { BL.p += dt / 0.035; c = 1; if (BL.p >= 1) { BL.phase = 'open'; BL.p = 0; } }
+  else if (BL.phase === 'open') {
+    BL.p += dt / 0.14; c = 1 - easeOut(Math.min(1, BL.p));
+    if (BL.p >= 1) {
+      c = 0; BL.phase = 'idle';
+      if (BLINK_COST.n) post({ type: 'log', message: `blink cost ${(BLINK_COST.ms / BLINK_COST.n).toFixed(2)} ms/frame over ${BLINK_COST.n} frames` });
+      if (!BL.second && Math.random() < 0.12) { BL.second = true; scheduleBlink(0.14 + Math.random() * 0.1); }
+      else { BL.second = false; scheduleBlink(); }
+    }
+  }
+  if (Math.abs(c - BL.last) > 0.004 || c === 0 && BL.last !== 0) { applyBlink(c); BL.last = c; }
+}
+
+function setBlinking(on) { BL.enabled = !!on; if (!on && BLINK.ready) { applyBlink(0); BL.last = 0; BL.phase = 'idle'; } }
+
+function blinkExperiment(closure) {
+  const info = BLINK.ready ? { reused: true } : setupBlink();
+  applyBlink(closure);
+  post({ type: 'log', message: 'blink ' + JSON.stringify(info) });
+  return info;
+}
+
 window.stage = {
+  setBlinking,
+  blinkExperiment,
+  faceExperiment,
   thumbPrep, setClear,
   setDebug,
   runProbe, setPixelRatio, sampleFrames,

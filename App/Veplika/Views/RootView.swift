@@ -90,6 +90,10 @@ struct RootView: View {
             try? await Task.sleep(for: .seconds(1.5))
             avatar.setMode(UserDefaults.standard.string(forKey: "debugMode") ?? "call")
             try? await Task.sleep(for: .seconds(1.5))
+            if UserDefaults.standard.object(forKey: "debugBlink") != nil { avatar.blinkExperiment(UserDefaults.standard.double(forKey: "debugBlink")) }
+            if let m = UserDefaults.standard.string(forKey: "debugFace") {
+                avatar.faceExperiment(m, UserDefaults.standard.string(forKey: "debugAxis") ?? "x", UserDefaults.standard.double(forKey: "debugAmount"))
+            }
             if UserDefaults.standard.bool(forKey: "debugHideDark") { avatar.darkFilter(true) }
             avatar.debugPose(clip, ms: UserDefaults.standard.integer(forKey: "debugMs"))
         }
