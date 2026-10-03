@@ -24,6 +24,7 @@ enum DebugHarness {
         if args.contains("-thumbCapture") { await captureThumbnail(avatar) }
         else if args.contains("-onboardingAuto") { await autoOnboard(avatar, store, onboarding) }
         else if args.contains("-perfProbe") { await perfProbe(avatar) }
+        else if let js = UserDefaults.standard.string(forKey: "debugJS") { await evalAfterLoad(avatar, js) }
     }
 
     private static func waitLoaded(_ avatar: AvatarController, orReady: Bool = false) async {
@@ -59,6 +60,15 @@ enum DebugHarness {
         onboarding.finish(chat: store)
         try? await Task.sleep(for: .seconds(1))
         debugLog("auto: after finish store=\(store.companion.id) name=\(store.companion.name)")
+    }
+
+    /// `-debugJS "<code>" [-debugMode call]`: switch camera preset, then run JS on the stage (pose/behaviour inspection).
+    private static func evalAfterLoad(_ avatar: AvatarController, _ js: String) async {
+        await waitLoaded(avatar)
+        try? await Task.sleep(for: .seconds(1.5))
+        avatar.setMode(UserDefaults.standard.string(forKey: "debugMode") ?? "call")
+        try? await Task.sleep(for: .seconds(1.5))
+        avatar.debugEval(js)
     }
 
     private static func perfProbe(_ avatar: AvatarController) async {

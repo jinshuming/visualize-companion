@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seeduplex Web Demo</title>
+  <link rel="stylesheet" href="/style.css?v=20260807-events-light">
+</head>
+<body>
+  <main class="app">
+    <section id="callHero" class="call-hero" aria-labelledby="callHeroTitle">
+      <div class="call-hero-bg" aria-hidden="true"></div>
+      <div class="call-hero-content">
+        <div class="call-visual" aria-hidden="true">
+          <div class="call-orbit call-orbit-aura"></div>
+          <div class="call-orbit call-orbit-one"></div>
+          <div class="call-orbit call-orbit-two"></div>
+          <div class="call-orbit call-orbit-scan"></div>
+          <div class="call-bars">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="call-avatar">
+            <div class="call-avatar-glow"></div>
+            <div class="call-avatar-face">
+              <video
+                src="/assets/zhayanv2.mp4"
+                autoplay
+                muted
+                loop
+                playsinline
+              ></video>
+            </div>
+          </div>
+        </div>
+        <div class="call-copy">
+          <p id="heroCallState" class="call-state">未连接</p>
+          <h2 id="callHeroTitle">端到端<span>真人级</span>语音对话，极具表现力。</h2>
+          <p class="call-subtitle">相比传统级联模式，表现更惊艳。</p>
+          <button id="heroConnectBtn" class="hero-call-btn" type="button">
+            <span class="hero-call-btn-bg" aria-hidden="true"></span>
+            <span class="hero-call-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7A2 2 0 0 1 22 16.9Z"/>
+              </svg>
+            </span>
+            <span id="heroConnectRail" class="hero-call-rail" aria-hidden="true"></span>
+            <span id="heroConnectText" class="hero-call-text">开始通话</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="callPage" class="call-page" hidden aria-labelledby="callPageTitle">
+      <div class="call-shell">
+        <div class="call-profile">
+          <div class="call-profile-visual">
+            <div class="call-profile-avatar">
+              <video
+                src="/assets/zhayanv2.mp4"
+                autoplay
+                muted
+                loop
+                playsinline
+              ></video>
+            </div>
+            <div class="call-bubble">
+              <strong id="callStateBubble">连接中</strong>
+              <span class="call-bubble-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            </div>
+          </div>
+          <h1 id="callPageTitle">Vivi</h1>
+          <p id="callDuration" class="call-duration">00:00</p>
+          <p class="call-skills">讲故事 ｜ 演绎动物声音 ｜ 唱歌 ｜ 说方言<br>模拟角色说话 ｜ 猜你说话情绪</p>
+          <p id="recordHint" class="call-mic-label" hidden></p>
+        </div>
+
+        <div class="call-qa-panel">
+          <div class="panel-head call-live-head">
+            <h2>QA 展示</h2>
+            <input id="qaSearchInput" class="qa-search-input" type="search" placeholder="搜索 QA">
+            <span id="qaSearchStatus" class="qa-search-status"></span>
+            <button id="clearMessagesBtn" type="button" class="link-btn">清空展示</button>
+          </div>
+          <div id="messages" class="messages"></div>
+        </div>
+
+        <div class="call-controls">
+          <button id="recordBtn" class="call-control-btn mic-on" type="button" disabled aria-label="关闭麦克风" title="关闭麦克风">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 15a4 4 0 0 0 4-4V6a4 4 0 0 0-8 0v5a4 4 0 0 0 4 4Z"/>
+              <path d="M19 11a7 7 0 0 1-14 0"/>
+              <path d="M12 18v4"/>
+              <path d="M8 22h8"/>
+              <path class="mic-off-slash" d="M4 20 20 4"/>
+            </svg>
+          </button>
+          <button
+            id="forceCommitBtn"
+            class="call-control-btn commit"
+            type="button"
+            disabled
+            aria-label="强制判停"
+            title="强制判停，仅在模型未自动判停、迟迟不回复时使用"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 5v7l4 2"/>
+              <path d="M5.6 5.6a9 9 0 1 1-1.7 10.1"/>
+              <path d="M3 5v5h5"/>
+            </svg>
+          </button>
+          <button id="callCloseBtn" class="call-control-btn hangup" type="button" aria-label="关闭通话" title="关闭通话">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2v10"/>
+              <path d="M18.4 6.6a9 9 0 1 1-12.8 0"/>
+            </svg>
+          </button>
+        </div>
+        <p class="force-commit-tip">模型迟迟不回复时，点中间按钮强制判停</p>
+        <div class="meter call-meter"><span id="meterFill"></span></div>
+        <p class="call-disclaimer">内容均由人工智能模型生成，不代表平台立场</p>
+      </div>
+    </section>
+
+    <div
+      id="leftResizeHandle"
+      class="column-resizer left-resizer"
+      role="separator"
+      aria-orientation="vertical"
+      aria-label="调整参数区和通话区宽度"
+      tabindex="0"
+    ></div>
+
+    <section class="panel settings">
+      <div class="title-row">
+        <div>
+          <h1>Seeduplex Web Demo</h1>
+          <p>实时语音对话 + 本机文件 Function Calling</p>
+        </div>
+        <span id="status" class="status">未连接</span>
+      </div>
+
+      <label>
+        <span>API Key</span>
+        <span class="secret-input">
+          <input id="apiKey" type="password" autocomplete="off" placeholder="从火山语音控制台获取的 X-Api-Key">
+          <button id="toggleApiKeyBtn" type="button" aria-label="显示 API Key" title="显示 API Key">
+            <svg class="eye-icon eye-show" aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M2.06 12.35a1 1 0 0 1 0-.7C3.7 7.18 7.9 4 12 4s8.3 3.18 9.94 7.65a1 1 0 0 1 0 .7C20.3 16.82 16.1 20 12 20s-8.3-3.18-9.94-7.65Z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg class="eye-icon eye-hide" aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M2.06 12.35a1 1 0 0 1 0-.7C3.7 7.18 7.9 4 12 4s8.3 3.18 9.94 7.65a1 1 0 0 1 0 .7C20.3 16.82 16.1 20 12 20s-8.3-3.18-9.94-7.65Z"/>
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M4 20 20 4"/>
+            </svg>
+          </button>
+        </span>
+        <span id="apiKeyError" class="field-error" hidden>请先填写 API Key，再点击连接</span>
+      </label>
+
+      <label>
+        <span class="label-row">
+          Dialog ID
+          <span class="tools-json-actions">
+            <button id="generateDialogIdBtn" type="button" class="link-btn">生成 UUID</button>
+          </span>
+        </span>
+        <input id="dialogId" autocomplete="off" placeholder="为空则创建新上下文；填写已有 ID 可继承上下文">
+      </label>
+
+      <div class="grid audio-config-grid">
+        <label class="voice-field">
+          <span>音色</span>
+          <select id="voice">
+            <option value="zh_female_vv_jupiter_bigtts">VV 女声</option>
+            <option value="zh_female_xiaohe_jupiter_bigtts">小荷女声</option>
+            <option value="zh_male_yunzhou_jupiter_bigtts">云舟男声</option>
+            <option value="zh_male_xiaotian_jupiter_bigtts">小天男声</option>
+            <option value="saturn_zh_female_aojiaonvyou_tob">傲娇女友（精品克隆）</option>
+          </select>
+        </label>
+        <label>
+          <span class="range-label">
+            语速 speed
+            <button id="speedReset" class="range-reset" type="button" title="重置为 0" aria-label="重置语速为 0">归零</button>
+          </span>
+          <span class="range-control">
+            <input id="speed" type="range" min="-50" max="100" step="1" value="0">
+            <output id="speedValue" for="speed">0</output>
+          </span>
+        </label>
+        <label>
+          <span class="range-label">
+            音量 loudness
+            <button id="loudnessReset" class="range-reset" type="button" title="重置为 0" aria-label="重置音量为 0">归零</button>
+          </span>
+          <span class="range-control">
+            <input id="loudness" type="range" min="-50" max="100" step="1" value="0">
+            <output id="loudnessValue" for="loudness">0</output>
+          </span>
+        </label>
+      </div>
+
+      <details class="voice-clone-box">
+        <summary class="voice-clone-summary">
+          <span>
+            声音复刻音色
+            <small>如果需要声音复刻音色的话点这里</small>
+          </span>
+          <span id="voiceCloneStatus" class="voice-clone-status">缓存为空</span>
+        </summary>
+        <div class="voice-clone-content">
+          <div class="grid voice-clone-grid">
+            <label>
+              <span>预付费音色槽位 ID</span>
+              <input id="cloneVoiceId" autocomplete="off" placeholder="例如 S_...">
+            </label>
+            <label>
+              <span>训练音频</span>
+              <input id="cloneAudioFile" type="file" accept=".wav,.mp3,.ogg,.m4a,.aac,.pcm,audio/*">
+            </label>
+            <div class="voice-clone-record voice-clone-wide">
+              <span>录音训练音频</span>
+              <div class="voice-clone-record-actions">
+                <button id="cloneRecordBtn" type="button" class="secondary-btn">开始录音</button>
+                <button id="cloneStopRecordBtn" type="button" class="secondary-btn" disabled>停止录音</button>
+                <button id="cloneClearRecordingBtn" type="button" class="link-btn" disabled>清除录音</button>
+                <span id="cloneRecordingStatus" class="voice-clone-record-status">未录音</span>
+              </div>
+            </div>
+            <label class="voice-clone-wide">
+              <span>朗读文本</span>
+              <textarea id="clonePromptText" rows="2" placeholder="可选，训练音频对应文本"></textarea>
+            </label>
+            <label class="voice-clone-wide">
+              <span>试听文本</span>
+              <input id="cloneDemoText" placeholder="可选，4 到 300 字">
+            </label>
+          </div>
+          <div class="voice-clone-actions">
+            <button id="trainCloneBtn" type="button">开始训练</button>
+            <button id="importCloneBtn" type="button" class="secondary-btn">保存已有音色</button>
+            <button id="queryCloneBtn" type="button" class="secondary-btn">查询状态</button>
+            <label class="check">
+              <input id="cloneDenoise" type="checkbox">
+              <span>音频降噪</span>
+            </label>
+            <label class="check">
+              <input id="cloneKeepVolume" type="checkbox">
+              <span>保留原始音量</span>
+            </label>
+          </div>
+          <div id="cloneCachedVoices" class="voice-clone-list"></div>
+        </div>
+      </details>
+
+      <label>
+        <span class="label-row">
+          自定义 SP（System prompt）
+          <span class="tools-json-actions">
+            <button id="resetInstructionsBtn" type="button" class="link-btn">恢复默认</button>
+          </span>
+        </span>
+        <textarea id="instructions" rows="22"></textarea>
+      </label>
+
+      <label>
+        <span class="label-row">
+          FC Tools JSON
+          <span class="tools-json-actions">
+            <button id="validateToolsBtn" type="button" class="link-btn">校验 JSON</button>
+            <button id="formatToolsBtn" type="button" class="link-btn">格式化 JSON</button>
+            <button id="resetToolsBtn" type="button" class="link-btn">恢复默认</button>
+          </span>
+        </span>
+        <textarea id="toolsJson" rows="10"></textarea>
+        <span id="toolsJsonStatus" class="tools-json-status" aria-live="polite"></span>
+      </label>
+
+      <div class="grid websearch-grid">
+        <label>
+          <span>联网类型</span>
+          <select id="webSearchType">
+            <option value="web_custom_api">web_custom_api（需要搜索 key）</option>
+            <option value="web_global_api">web_global_api（需要搜索 key）</option>
+          </select>
+        </label>
+        <label id="webSearchApiKeyField" hidden>
+          <span>搜索 API Key</span>
+          <input id="webSearchApiKey" type="password" autocomplete="off" placeholder="联网类型需要 key 时填写" disabled>
+        </label>
+      </div>
+
+      <details class="location-box">
+        <summary class="location-summary">
+          <span>地理位置</span>
+          <span id="locationStatus" class="location-status">未设置</span>
+        </summary>
+        <div class="location-content">
+          <div class="location-actions">
+            <button id="openLocationMapBtn" type="button" class="secondary-btn">地图选点</button>
+            <button id="useBrowserLocationBtn" type="button" class="secondary-btn">使用浏览器定位</button>
+            <button id="clearLocationBtn" type="button" class="link-btn">清空</button>
+          </div>
+          <div id="locationMapPanel" class="location-map-panel" hidden>
+            <div id="locationMap" class="location-map"></div>
+          </div>
+          <div class="grid location-grid">
+            <label>
+              <span>经度 longitude</span>
+              <input id="locationLongitude" inputmode="decimal" placeholder="例如 116.397128">
+            </label>
+            <label>
+              <span>纬度 latitude</span>
+              <input id="locationLatitude" inputmode="decimal" placeholder="例如 39.916527">
+            </label>
+            <label>
+              <span>地址 address</span>
+              <input id="locationAddress" placeholder="例如 北京市东城区东长安街">
+            </label>
+            <label>
+              <span>城市 city</span>
+              <input id="locationCity" placeholder="例如 北京市">
+            </label>
+            <label>
+              <span>省份 province</span>
+              <input id="locationProvince" placeholder="例如 北京市">
+            </label>
+            <label>
+              <span>区县 district</span>
+              <input id="locationDistrict" placeholder="例如 东城区">
+            </label>
+            <label>
+              <span>乡镇 town</span>
+              <input id="locationTown" placeholder="可选">
+            </label>
+            <label>
+              <span>国家 country</span>
+              <input id="locationCountry" placeholder="例如 中国">
+            </label>
+            <label>
+              <span>国家码 country_code</span>
+              <input id="locationCountryCode" placeholder="例如 CN">
+            </label>
+          </div>
+        </div>
+      </details>
+
+      <div class="actions">
+        <button id="connectBtn" type="button" hidden>连接</button>
+        <button id="closeBtn" type="button" hidden disabled>断开</button>
+        <label class="check">
+          <input id="enableTools" type="checkbox">
+          <span>启用本地文件 FC</span>
+        </label>
+        <label class="check">
+          <input id="enableWebSearch" type="checkbox" checked>
+          <span>联网</span>
+        </label>
+        <label class="check">
+          <input id="enableMusic" type="checkbox" checked>
+          <span>唱歌</span>
+        </label>
+        <label class="check">
+          <input id="enableProactiveSpeak" type="checkbox">
+          <span>主动回复</span>
+        </label>
+      </div>
+    </section>
+
+    <div
+      id="rightResizeHandle"
+      class="column-resizer right-resizer"
+      role="separator"
+      aria-orientation="vertical"
+      aria-label="调整通话区和事件区宽度"
+      tabindex="0"
+    ></div>
+
+    <section class="workspace">
+      <aside class="panel side">
+        <div class="panel-head side-head">
+          <h2>交互事件</h2>
+          <button id="clearEventsBtn" type="button" class="link-btn">清空事件</button>
+        </div>
+        <pre id="events"></pre>
+      </aside>
+    </section>
+  </main>
+  <div id="errorToast" class="error-toast" role="alertdialog" aria-live="assertive" aria-modal="true" hidden>
+    <div class="error-dialog">
+      <div class="error-dialog-head">
+        <strong id="errorToastTitle">操作失败</strong>
+        <button id="errorToastCloseBtn" type="button" aria-label="关闭错误提示" title="关闭错误提示">×</button>
+      </div>
+      <p id="errorToastMessage"></p>
+    </div>
+  </div>
+  <script src="/app.js?v=20260807-session-id-order"></script>
+</body>
+</html>

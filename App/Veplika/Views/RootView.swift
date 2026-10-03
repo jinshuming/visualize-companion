@@ -60,7 +60,8 @@ struct RootView: View {
             avatar.show(store.companion)
             avatar.setMode(mode.stageName)
             store.onReply = { reply in
-                if let g = reply.gesture { avatar.play(g) }
+                if call.isActive { if let e = reply.emotion { avatar.react(e) } }
+                else if let g = reply.gesture { avatar.play(g) }
                 if store.speaksReplies || call.isActive { speech.speak(reply.text, language: store.companion.voiceLanguage) }
             }
         }
@@ -156,6 +157,7 @@ struct RootView: View {
         focused = false
         speech.stopSpeaking()
         withAnimation(DS.Motion.glide) { mode = .call }
+        call.onHangUp = { endCall() }
         call.start(store: store, speech: speech, avatar: avatar)
     }
 

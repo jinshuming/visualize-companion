@@ -1,6 +1,6 @@
 # Visualize Companion — Product Requirements (living document)
 
-> **Owner:** Shuming Jin (GitHub `jinshuming`) · **Created:** 2026-10-01 · **Last updated:** 2026-10-03
+> **Owner:** Shuming Jin (GitHub `jinshuming`) · **Created:** 2026-10-01 · **Last updated:** 2026-10-04
 >
 > This file is the source of truth for what the owner wants and why. Every agent (human or AI) must read it
 > **before starting work** and keep it current. If this file and a conversation disagree, the newest owner
@@ -87,8 +87,8 @@ in a room → voice call with face close-up.**
   stickers and pop a floating note; a pastel equalizer "vibe meter" dances harder as more genres are picked; a
   reaction line answers each pick; "Shuffle for me" picks three at random; haptics on select. At least one required.
 - **Visual-style step:** Realistic / Stylized CG / Cartoon cards, previewed with matching library characters.
-  The library has **no stylized-CG character yet**, so that card shows a symbol and the matcher falls back to traits.
-  Current mapping: `realistic` = Chloe, Jolene, Sam; `cartoon` = the chibi characters.
+  Current mapping: `realistic` = Chloe, Jolene, Sam; `stylized` = Gwen (added 2026-10-04, 3D-film look, human
+  proportions); `cartoon` = the chibi characters. The Stylized card still shows a symbol, not Gwen's art.
 - The mock matcher ranks visual-style match first, then personality/look/activity/**music** overlap (genre tags in
   `Companion.tagTable`). Choices are saved to `UserDefaults` (`pref.musicGenres`, `pref.visualStyle`) for the future
   chat brain (R10) and real generation (R1).
@@ -108,9 +108,31 @@ in a room → voice call with face close-up.**
 ### R3 — Rich body-motion control **[Owner]**
 - **Status: Partial.** 5 clips wired (idle, wave, nod, clap, cheer) from PINOC's free library (54 clips).
   Per-clip yaw correction is needed because some clips bake a root rotation. Clips hard-cut (no crossfade) for that reason.
+- **Call conversation set — Done in simulator, Unverified on device (2026-10-04).** 12 clips generated with PINOC text-to-motion
+  (61 credits, owner-approved; 4 samples each, one picked by loop closure/amplitude/root drift, then checked on screen):
+  `idle_calm`, `idle_shift` (full-body base loops); `listen_nod`, `listen_tilt`; `talk_beats`, `talk_soft`; `laugh_soft`, `shy_hair`,
+  `think`, `hand_heart`, `shrug`, `sigh_sad` (upper-body overlays). Files in `Resources/motions/`, designed/driven by
+  `web/src/behavior.js`: base loop + one upper-body overlay at a time (engine bone-masked layer, faded in 0.3 s / out 0.5 s,
+  no yaw problems because pelvis/root are excluded). The call phase (idle/listening/thinking/speaking) picks gestures on a
+  randomised schedule (never the same twice in a row); a reply's emotion (`Reply.emotion`) interrupts with a reaction and sets
+  the speaking tone. These generated clips face away as full-body clips (root yaw 0, library clips 180), so the two base idles
+  carry `CLIP_YAW 180`.
+  - **Limits:** emotion comes from the mock chat's keyword intents (real model output is R10); one rig only measured on Chloe/Neko/
+    Gwen-class characters; talk gestures mostly use hands that are off-screen in the call close-up; per-persona amplitude not yet;
+    chat/space views still use the old 5 clips; clip picks were chosen by metrics + a glance, not a full review of all 4 samples.
+  - Candidates (all 48 samples) live in the PINOC library under the owner's account if a different pick is wanted.
 - **Planned:** a gesture vocabulary driven by conversation (R5); layered animation (upper body gestures over idle,
   engine supports bone-masked layers); text-to-motion for gaps (`generate_motion`, 1 credit/second, owner approval);
   proper blending that handles yaw.
+
+- **Video-call liveliness — Done in simulator, Unverified on device (2026-10-04).** Owner asked for real-call feel instead of a
+  static, stiff picture. In call mode only: (1) **hand-held camera** (`camera.js`): slow arm drift, mid wobble and faint
+  tremor on position and rotation, eased in/out; (2) **wandering gaze** (`gaze.js`): looks at the camera 1.8-4.5 s, then
+  glances away (side, down, up) for 0.7-2 s and returns; eyes lead with quick saccades, head and neck follow slowly, plus
+  micro-saccades. Driven by rotating `neck_01/neck_02/head` and `FACIAL_L/R_EyeParallel` through the engine's post-clamp hook.
+  Measured axes on Chloe: head yaw = z, pitch = y; eyes yaw = y, pitch = x.
+  - **Limits:** chibi characters have painted eyes, so only the head moves (eyes do not); axes measured on one realistic character
+    only; not linked to speech/emotion yet; behaviour is random, not conversation-driven (R5).
 
 ### R4 — Controllable facial expression **[Owner]**
 > Expressions can be controlled.
@@ -133,7 +155,9 @@ in a room → voice call with face close-up.**
   `{ text, emotion, intensity, gesture, gaze }`, which drives R3/R4 and the TTS style (R6). Include idle behaviours
   (breathing, blinking, gaze shifts, listening posture) so she is never frozen while the user speaks.
 
-- **Idle blinking — Done in simulator, Unverified on device (2026-10-03).** Owner asked for human-like timed blinking.
+- **Idle blinking — DISABLED (2026-10-04).** The owner found the recoloured blink looks odd, so it is off by default
+  (`Blinker.enabled = false`; the code stays for a rework, e.g. real lid geometry). Original notes follow.
+- **Idle blinking (previous state) — Done in simulator, Unverified on device (2026-10-03).** Owner asked for human-like timed blinking.
   Every character now blinks on a natural schedule: ~15/min with random 2–6.5 s gaps, 12 % double blinks, close ≈75 ms,
   hold ≈35 ms, open ≈140 ms (`stage.js`: `blinkTick`, `setBlinking(on)`).
   - **How:** the eyeball Gaussians (those weighted to `FACIAL_L/R_EyeParallel`, ~1.2 k splats) are recoloured at runtime —
@@ -176,6 +200,72 @@ in a room → voice call with face close-up.**
 - **Status: Done for the loop, Unverified on device.** Hands-free: listen → silence detect → reply → speak → listen.
   Face close-up framing per character style, mute, loudspeaker, hang-up, call timer.
 - **Gaps:** voice quality (R6), lip-sync, and the microphone path has only been exercised in the simulator.
+
+### R9a — Real-time voice in the video call, like talking to a real person **[Owner]** (2026-10-04)
+> When entering video-call mode, I want real-time voice conversation — like a call with a real person.
+
+- **Status: Planned.** Today's loop is half-duplex turn-taking (Apple STT → 1.3 s silence → full reply → Apple TTS),
+  roughly 3–5 s from end of speech to first sound, and she cannot be interrupted.
+- **Bar for "like a real person":** voice-to-voice latency ≤ ~1 s (target 500–800 ms); barge-in (user can cut her off
+  and she stops within ~200 ms); echo cancellation so loudspeaker calls work; semantic end-of-turn (not a fixed silence);
+  backchannels and listening behaviour while the user talks; emotional voice (R6); lip-sync and expression locked to
+  the audio (R4, R5).
+- **Proposed architecture (not yet approved):** a server-side voice agent (LiveKit Agents or Pipecat) connected to the
+  app over WebRTC. Cascaded pipeline: VAD → streaming ASR → turn detector → streaming LLM (Claude, sentence-chunked,
+  inline emotion/gesture tags) → streaming TTS with word/viseme timing → audio + a data channel of
+  `{phase, emotion, gesture, gaze, visemes}` events. iOS side: `AVAudioEngine` voice-processing I/O (AEC), LiveKit
+  Swift SDK, native audio playback whose clock drives lip-sync in the WebView. API keys live on the server only.
+- **Alternative to bake off:** end-to-end speech-to-speech models (lowest latency, hear the user's tone) — weaker on
+  per-character voice and on Claude-quality persona/structured output.
+- **Needs from the owner:** a backend to host the agent, per-minute budget, cascaded vs speech-to-speech decision after
+  a listening test, vendor choice for Chinese and English. Lip-sync is gated on the R4 facial-bone experiment.
+- **First attempt chosen by the owner (2026-10-04): Doubao Seeduplex 3.0** (豆包实时语音模型 3.0, full-duplex
+  speech-to-speech). Facts from the official docs (updated 2026-09-28) and the vendor demos in `doubao-real-time-demo/`:
+  `wss://openspeech.bytedance.com/api/v3/duplex/realtime/dialogue`, header `X-Api-Key`, JSON text frames with
+  OpenAI-Realtime-style events, `session.model = "1.2.6.1"`. Input PCM 16 kHz mono int16 in 20 ms frames (640 B, Base64),
+  paced at real time (too fast or too slow is an error); the mic stream must keep flowing (or send
+  `input_audio_mute.commit`). Output 24 kHz `pcm` / `pcm_s16le` / `ogg_opus` (default). `instructions` + context ≤ 12K
+  tokens; server keeps the last 20 turns per `session.id`. Barge-in signal:
+  `conversation.item.input_audio_transcription.started`; manual cancel: `response.cancel`. Also: function calling,
+  `enable_proactive_speak`, exit-intent detection, voice cloning (paid slots, Chinese only). Limits: 60 sessions/min,
+  100k tokens/min per AppID, 10 min of silence ends the session; always `session.close` before closing the socket.
+- **MVP built (2026-10-04) — works in the simulator, Unverified on device.** Owner chose: backend on the owner's Mac,
+  Go, simplest MVP. `relay/` (Go) holds the key in the gitignored `relay/.env`, passes JSON frames both ways and closes
+  sessions gracefully; `go run . -probe file.wav` tests the key and protocol without the app. iOS: `RealtimeCall` +
+  `DuplexAudio` (voice-processing AEC engine, 20 ms paced uplink, streamed `pcm_s16le` playback, barge-in on
+  `transcription.started`, transcripts logged into the chat, one `session.id` per companion). `CallSession` uses it when a
+  relay address is set (Settings › Real-time call server; the simulator defaults to `ws://127.0.0.1:8787/realtime`) and
+  falls back to the Apple loop if it fails. (The first 403 `45000030 requested resource not granted` went away once the
+  owner enabled the service in the console.)
+- **Verified 2026-10-04:** the probe round-trips with Doubao (Chinese sample question → correct transcript → spoken reply);
+  **first reply audio ≈ 1.5 s after the user stops speaking** (target ≤ 1 s; includes Doubao's end-of-turn wait).
+  In the simulator: call connects, greeting is generated, uplink holds exactly 50 frames/s with the mic at 100 % of real
+  time, hang-up closes the session cleanly. **Not yet verified:** a spoken exchange through the app, playback quality,
+  barge-in, echo cancellation and loudspeaker on the iPhone, English.
+- **Found while testing:** the transcript arrives in `text`, not `transcript` as the docs say; each
+  `transcription.delta` carries the whole partial sentence so far (replace, don't append); uplink must follow a fixed
+  20 ms clock (the mic delivers ~100 ms chunks, so a 40 ms jitter buffer smooths them); Apple's voice-processing unit
+  delivers no mic input in the iOS Simulator, so the simulator runs without echo cancellation (use headphones there).
+- **Session options enabled by the owner (2026-10-04), each verified against the live API with spoken test questions:**
+  `enable_user_query_exit` (a goodbye returns `status_code 20000002`; the app hangs up after her goodbye plays),
+  `enable_music`, `enable_asr_twopass` + the companion's name as a hotword, `tools` (`do_gesture` → avatar clips,
+  `change_background`), and `dialog_context` (the last ≤12 chat turns, ≤3000 chars — she recalled a fact from it).
+  The chat history on the device is now the single memory: text chat and call transcripts both feed it, and the
+  per-companion server `session.id` was dropped. **Cost:** a tool call adds ~1.5 s before she answers (3.2 s vs 1.6 s),
+  so tools are limited to explicit requests; two-pass ASR may add ~0.1–0.3 s.
+- **Owner's first simulator call (2026-10-04):** Doubao understood mixed Chinese/English and answered quickly, sang on
+  request, and kept English as instructed even when asked in Chinese. But without echo cancellation her voice looped back
+  through the Mac mic and was answered as the user's words. Fix: in the simulator only, the mic is closed while she speaks
+  (+300 ms), so no barge-in there; the device keeps full duplex. Open question for the owner: should she answer in the
+  language the user speaks instead of the app language?
+- **Plan:** (0) owner listening test with the vendor web demo; (1) dev relay that holds the key + iOS client with
+  voice-processing AEC and barge-in, verified on the iPhone; (2) link to the avatar — listening/speaking gaze, audio-energy
+  mouth, emotion from reply text; (3) production relay with per-user short-lived auth, reconnects, privacy consent.
+- **Known gaps against the bar (Unverified until tested):** English voice quality and availability on 3.0 (the demo only
+  lists Chinese voices — conflicts with English-first P7); only ~5 stock voices, so per-character voices need paid
+  clones; the brain is Doubao, not Claude (R10), and gives no structured emotion/gesture output; user audio goes to
+  ByteDance servers (needs a consent line); price per minute not yet checked. The docs say input `rate` while the demo
+  sends `sample_rate` — check which the server accepts.
 
 ### R10 — Chat brain
 - **Status: Mock** (`MockChatEngine`, persona-flavoured canned lines, EN+ZH). **Planned:** Claude API behind the
@@ -242,6 +332,7 @@ app used to cut every gesture at 2.4 s, so the nod never reached its peak. Gestu
   backend, owns the character and clips and exposes `window.stage`; `room.js` builds the themed room; `camera.js` is the
   orbit rig (`chat`, `space`, `call`); `blink.js` is idle blinking; `perf.js` is adaptive resolution, the perf probe and
   the diagnostics badge. The Swift side talks to it only through `AvatarController`.
+- `relay/` (Go) is the dev backend for real-time calls: `cd relay && go run .` (key in `relay/.env`, never committed).
 - `Resources/` holds `.vsplat` characters and `.glb` motions. `scripts/sync_web.sh` builds and copies them into the app.
 - Debug launch arguments (scripted runs live in `Stage/DebugHarness.swift`): `-seedDemo`, `-perfProbe`, `-resetOnboarding`,
   `-onboardingAuto`, `-skipOnboarding`, `-thumbCapture` (+ `-companion <id>`). Settings has a "Show render diagnostics" toggle.
@@ -288,6 +379,7 @@ app used to cut every gesture at 2.4 s, so the nod never reached its peak. Gestu
 - Content boundaries for a companion product (romance, age gating, safety) — none defined yet.
 - Which Apple team/account should ship builds?
 - Budget: PINOC credits per new user, TTS cost per minute.
+- Real-time call (R9a): where to host the voice agent, per-minute budget, and cascaded vs speech-to-speech.
 
 ---
 
@@ -304,15 +396,20 @@ app used to cut every gesture at 2.4 s, so the nod never reached its peak. Gestu
 | 2026-10-01 | Default render resolution 2× with automatic step-down. | Perf data on iPhone 13 Pro |
 | 2026-10-01 | No saturated colour anywhere; pastel/translucent only; enforced by `DS.audit()`. | Owner |
 | 2026-10-01 | Onboarding built as a mock (questions + photo + generated reveal); real generation later. | Owner |
+| 2026-10-04 | Generate 12 conversation clips for video calls via PINOC (61 credits) and drive them from a call-phase state machine (base loop + upper-body overlays). | Owner approved |
+| 2026-10-04 | Idle blinking switched off; the recolour approach looked odd to the owner. | Owner |
 | 2026-10-03 | Blink by recolouring eye splats (lid sweep + lash line) rather than by moving eyelid bones. | Experiment results |
 | 2026-10-03 | Gesture playback length follows each clip's real duration (nod no longer cut at 2.4 s). | Debugging |
 | 2026-10-01 | Skip TestFlight for now. Do not upload to the company Apple team without explicit approval. | Owner |
+| 2026-10-04 | Real-time call: try Doubao Seeduplex 3.0 (full-duplex speech-to-speech) first. | Owner |
 | 2026-10-02 | Onboarding asks for favourite music genres (fun, light multi-select) and, as the last choice, the partner's visual style: realistic / CG stylized / cartoon. | Owner |
 
 ---
 
 ## 10. Changelog of this document
 
+- 2026-10-04 — R9a: owner chose Doubao Seeduplex 3.0 as the first attempt; recorded API facts, plan and gaps.
+- 2026-10-04 — Added R9a (real-time, human-like voice in the video call) with the proposed architecture.
 - 2026-10-03 — Simplification pass: no behaviour change. Stopped tracking `App/build-device/` (2.7k build files), split
   `web/stage.js` into modules, removed the facial-bone/blink/dark-splat experiment code (findings stay in R4/R5), merged the
   two mesh backdrops, folded `Companion`'s side tables into the struct, moved debug runners out of `RootView`.

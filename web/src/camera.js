@@ -19,6 +19,12 @@ const cur = { ...MODES.chat }, tgt = { ...MODES.chat };
 let mode = 'chat';
 let cameraEntity;
 
+// Hand-held feel for video calls: slow drift of the arm, a mid-rate wobble and a faint tremor, each a sum of sines at
+// unrelated frequencies so it never visibly loops. `shake` eases 0 -> 1 on entering a call and back out of it.
+let clock = 0, shake = 0;
+const wave = (t, seed) => Math.sin(t * 0.37 + seed) * 0.5 + Math.sin(t * 0.91 + seed * 2.3) * 0.3 + Math.sin(t * 2.3 + seed * 4.1) * 0.2;
+const tremor = (t, seed) => Math.sin(t * 7.1 + seed * 1.7) * 0.6 + Math.sin(t * 11.9 + seed * 3.1) * 0.4;
+
 export const currentMode = () => mode;
 
 export function initCamera(scene) {
@@ -33,10 +39,21 @@ function apply() {
   const t = [right[0] * cur.shift, cur.ty, right[2] * cur.shift];
   cameraEntity.setPosition(t[0] - fwd[0] * cur.dist, t[1] - fwd[1] * cur.dist, t[2] - fwd[2] * cur.dist);
   cameraEntity.lookAt(t[0], t[1], t[2]);
+  if (shake > 0.001) handheld(shake);
+}
+
+function handheld(k) {
+  const d = cur.dist / 2.5;
+  const p = (seed, drift, wob, trem) => (wave(clock, seed) * drift + wave(clock * 2.4, seed + 9) * wob + tremor(clock, seed) * trem) * k;
+  const pos = cameraEntity.getPosition();
+  cameraEntity.setPosition(pos.x + p(1, 0.028, 0.010, 0.0016) * d, pos.y + p(2, 0.024, 0.008, 0.0016) * d, pos.z + p(3, 0.016, 0.006, 0.001) * d);
+  cameraEntity.rotateLocal(p(4, 0.7, 0.25, 0.05), p(5, 0.9, 0.3, 0.05), p(6, 0.8, 0.3, 0.04)); // degrees: pitch, yaw, roll
 }
 
 /** Per-frame glide toward the target preset. */
 export function cameraTick(dt) {
+  clock += dt;
+  shake += ((mode === 'call' ? 1 : 0) - shake) * (1 - Math.exp(-dt * 1.6));
   const k = 1 - Math.exp(-dt * 5.5);
   const dy = ((tgt.yaw - cur.yaw + 540) % 360) - 180;
   cur.yaw += dy * k;

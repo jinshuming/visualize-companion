@@ -3,6 +3,8 @@ import Foundation
 struct Reply {
     let text: String
     let gesture: Gesture?
+    /// Feeling behind the line: "happy", "sad", "warm", "shy", "think", "doubt", "laugh". Drives call body language.
+    var emotion: String? = nil
 }
 
 /// Swap in a real LLM-backed engine here later; the rest of the app only talks to this protocol.
@@ -26,7 +28,16 @@ struct MockChatEngine: ChatEngine {
         case .sad, .question: .nod
         default: nil
         }
-        return Reply(text: line.randomElement()!, gesture: gesture)
+        let emotion: String? = switch intent {
+        case .sad: "sad"
+        case .happy: "happy"
+        case .praise: "shy"
+        case .thanks, .greet, .bye: "warm"
+        case .joke: "laugh"
+        case .question: "think"
+        case .other: nil
+        }
+        return Reply(text: line.randomElement()!, gesture: gesture, emotion: emotion)
     }
 
     /// Understands both languages. ASCII keywords match whole words ("hi" must not fire on "this");

@@ -53,6 +53,11 @@ final class AvatarController: NSObject {
     func nextTheme() { run("window.stage.nextTheme()") }
     func setDebug(_ on: Bool) { run("window.stage.setDebug(\(on))") }
 
+    /// Video-call behaviour: the call phase ("idle", "listening", "thinking", "speaking") and the reply's emotion
+    /// ("happy", "sad", "warm", "shy", "think", "doubt", "laugh") choose what she does with her body.
+    func callPhase(_ phase: String) { run("window.stage.callPhase('\(phase)')") }
+    func react(_ emotion: String) { run("window.stage.react('\(emotion)')") }
+
     func play(_ gesture: Gesture) {
         guard status == .loaded else { return }
         run("window.stage.gesture('\(gesture.rawValue)')")
@@ -60,6 +65,7 @@ final class AvatarController: NSObject {
 
     #if DEBUG
     func thumbPrep(dist: Double, ty: Double) { run("window.stage.thumbPrep(\(dist), \(ty))") }
+    func debugEval(_ js: String) { run(js) }
     func setClear(_ hex: String) { run("window.stage.setClear('\(hex)')") }
 
     /// Runs the web stage's scripted frame-rate probe and returns its JSON report.

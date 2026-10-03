@@ -21,13 +21,15 @@ struct Companion: Identifiable, Hashable {
     private let greetingText: Bilingual
     private let callGreetingText: Bilingual
     var style: Style = .chibi
+    /// 3D-film look with human proportions; framed like `.realistic` but chosen by the "Stylized CG" onboarding card.
+    var stylized = false
 
     /// The user may rename their companion during onboarding.
     var name: String { CompanionNames.name(for: id) ?? baseName }
     var accent: Color { Color(hex: accentHex) }
     var secondary: Color { Color(hex: secondaryHex) }
-    /// Onboarding visual-style bucket: `realistic`, `stylized` (none in the library yet) or `cartoon`.
-    var visualStyle: String { style == .realistic ? "realistic" : "cartoon" }
+    /// Onboarding visual-style bucket: `realistic`, `stylized` or `cartoon`.
+    var visualStyle: String { stylized ? "stylized" : style == .realistic ? "realistic" : "cartoon" }
     var tagline: String { taglineText.text }
     var personality: String { personalityText.text }
     var greeting: String { greetingText.text }
@@ -87,6 +89,22 @@ struct Companion: Identifiable, Hashable {
                   greetingText: Bilingual("Oh hey! You're in my frame. Say hi, then tell me everything.", "哦嘿！你入镜啦。先打个招呼，然后把一切都告诉我。"),
                   callGreetingText: Bilingual("Hey hey! Can you see me? I can see you!", "嘿嘿！你看得到我吗？我看得到你！"),
                   style: .realistic),
+        Companion(id: "gwen", baseName: "Gwen",
+                  taglineText: Bilingual("Web-slinging drummer", "飞檐走壁的鼓手"),
+                  personalityText: Bilingual("Quick-witted, daring, loyal to the bone", "机灵、大胆，对朋友绝对忠诚"),
+                  accentHex: 0xD8C4F0, secondaryHex: 0xF2C4D8,
+                  gender: .female, traits: ["cool", "playful", "sporty", "adventure", "confident", "rock", "indie", "soundtrack"],
+                  greetingText: Bilingual("Hey, you! Perfect timing, I just got back from a rooftop run. What's up?", "嘿，是你！来得正好，我刚从屋顶跑完一圈回来。怎么啦？"),
+                  callGreetingText: Bilingual("Hey! Swinging by to listen. Go ahead, I'm all ears.", "嘿！我来听你说啦。说吧，我听着呢。"),
+                  style: .realistic, stylized: true),
+        Companion(id: "punk", baseName: "Vex",
+                  taglineText: Bilingual("Purple punk", "紫发朋克"),
+                  personalityText: Bilingual("Edgy, loud, fiercely loyal", "叛逆、张扬，对在乎的人格外忠诚"),
+                  accentHex: 0xD0B8F0, secondaryHex: 0xF0BCD8,
+                  gender: .female, traits: ["cool", "confident", "playful", "rock", "electronic", "hiphop", "indie"],
+                  greetingText: Bilingual("Yo, there you are. Turn it up, tell me everything.", "哟，你终于来了。把音量调大，什么都跟我说。"),
+                  callGreetingText: Bilingual("Hey, it's me. Go ahead, I'm listening.", "嘿，是我。说吧，我听着。"),
+                  style: .realistic, stylized: true),
     ]
 
     enum Gender: String { case female, male }

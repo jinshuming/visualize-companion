@@ -6,6 +6,8 @@ import { Scene, Character, Animation } from '@viggle/splat-engine';
 import { buildRoom, setRoomVisible, THEMES } from './room.js';
 import { initCamera, cameraTick, setMode, setProfile, orbit, zoom, resetOrbit, frameThumb } from './camera.js';
 import { Blinker } from './blink.js';
+import { Gaze } from './gaze.js';
+import { CallBehavior, CALL_CLIPS } from './behavior.js';
 import { Perf } from './perf.js';
 
 const post = (m) => window.webkit?.messageHandlers?.stage?.postMessage(m);
@@ -16,7 +18,7 @@ const T0 = performance.now();
 const marks = {};
 const mark = (k) => { marks[k] = Math.round(performance.now() - T0); };
 
-let scene, app, character, blinker, perf;
+let scene, app, character, blinker, gaze, behavior, perf;
 
 // ---------------------------------------------------------------------------
 // Backend selection. Splats live in rgba32float textures sampled with a filtering sampler,
@@ -42,7 +44,8 @@ async function webgpuCanDrawSplats() {
 // Some library clips bake a root yaw into the pelvis, so they face away from camera.
 // Counter-rotate the entity per clip; transitions are hard cuts because a crossfade
 // would blend the pelvis yaw while the entity yaw snaps.
-const CLIP_YAW = { idle: 0, wave: 0, clap: 0, nod: 235, cheer: -20 };
+// Generated call clips have their root at yaw 0 (library clips: 180), so as full-body clips they face away: +180.
+const CLIP_YAW = { idle: 0, wave: 0, clap: 0, nod: 235, cheer: -20, idle_calm: 180, idle_shift: 180 };
 // Real clip lengths (s): wave 1.67, nod 3.67 (the head dips at ~3.2-3.6 s), clap 1.17, cheer 2.50.
 // A gesture must run its full length or the nod is cut off before it reaches its peak.
 const CLIP_MS = { wave: 1800, nod: 3800, clap: 2400, cheer: 2600 };
@@ -59,7 +62,7 @@ async function load(id, style = 'chibi') {
   const next = await Character.loadVsplat(scene, `${BASE}characters/${id}.vsplat`, { name: id });
   if (character) { try { character.destroy?.(); } catch {} }
   character = next;
-  playClip('idle', true);
+  settle();
   blinker.reset();
   mark('charLoaded:' + id);
   post({ type: 'loaded', id });
@@ -69,8 +72,14 @@ async function load(id, style = 'chibi') {
 function gesture(name, ms = CLIP_MS[name] ?? 2400) {
   if (!character) return;
   playClip(name, name === 'clap' || name === 'cheer');
+  behavior?.setLocked(true);
   clearTimeout(gesture.t);
-  gesture.t = setTimeout(() => playClip('idle', true), ms);
+  gesture.t = setTimeout(() => { behavior?.setLocked(false); settle(); }, ms);
+}
+
+/** Return to the resting pose for the current mode: the call posture in a call, the plain idle elsewhere. */
+function settle() {
+  if (behavior?.active) { playClip('idle_calm', true); behavior.baseName = 'idle_calm'; } else playClip('idle', true);
 }
 
 let themeIndex = 0;
@@ -100,17 +109,42 @@ async function init() {
   mark('roomBuilt');
   initCamera(scene);
   blinker = new Blinker(scene, post, () => character);
+  gaze = new Gaze(scene, () => character);
+  behavior = new CallBehavior({
+    getCharacter: () => character, gaze, loadClips: loadCallClips,
+    playBase: (name) => { playClip(name, true); },
+    settle: () => playClip('idle', true),
+  });
   app.on('update', cameraTick);
-  app.on('update', (dt) => blinker.tick(dt));
-  perf = new Perf({ app, post, marks, backend, drive: { setTheme, setMode, orbit, gesture } });
+  app.on('update', (dt) => { blinker.tick(dt); gaze.tick(dt); behavior.tick(dt); });
+  perf = new Perf({ app, post, marks, backend, drive: { setTheme, setMode: setStageMode, orbit, gesture } });
   scene.start();
   await Promise.all(MOTIONS.map((m) => Animation.loadGlb(scene, `${BASE}motions/${m}.glb`, m)));
   mark('motionsLoaded');
   post({ type: 'ready' });
 }
 
+// Video calls get the lively behaviour (hand-held camera, wandering gaze); chat and space stay steady.
+function setStageMode(name, instant) {
+  const wasCall = behavior?.active || behavior?.entered;
+  setMode(name, instant);
+  gaze?.setActive(name === 'call');
+  if (name === 'call' && !wasCall) behavior?.begin();
+  else if (name !== 'call' && wasCall) behavior?.leave();
+}
+
+let callClips;
+const loadCallClips = () => callClips ||= Promise.all(Object.keys(CALL_CLIPS).map((m) => Animation.loadGlb(scene, `${BASE}motions/${m}.glb`, m)));
+
 window.stage = {
-  load, gesture, setMode, orbit, zoom, resetOrbit, setTheme,
+  loadCallClips,
+  callPhase: (p) => behavior?.setPhase(p),
+  react: (e) => behavior?.react(e),
+  testClip: (name, upper) => { // debug: play any clip, full body or as an upper-body overlay on the call idle
+    if (upper) { playClip('idle_calm', true); character.playLayer('g', name, { region: 'upperBody', loop: true, weight: 1 }); }
+    else playClip(name, true);
+  },
+  load, gesture, setMode: setStageMode, orbit, zoom, resetOrbit, setTheme,
   nextTheme: () => setTheme(themeIndex + 1),
   setBlinking: (on) => blinker?.setEnabled(on),
   setDebug: (on) => perf?.setBadge(on),
