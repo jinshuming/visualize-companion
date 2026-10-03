@@ -48,12 +48,10 @@ final class ChatStore {
 
     static let xpPerLevel = 50
     var level: Int { xp / Self.xpPerLevel + 1 }
-    var levelProgress: Double { Double(xp % Self.xpPerLevel) / Double(Self.xpPerLevel) }
 
     // MARK: Actions
 
     func select(_ new: Companion) {
-        debugLog("select \(new.id) (current \(companion.id))")
         guard new != companion else { return }
         task?.cancel()
         isTyping = false

@@ -29,7 +29,7 @@ Run on an iOS 26 simulator or a device (splat rendering is GPU-heavy, so test on
 | Path | What |
 |---|---|
 | `Resources/` | PINOC characters (`.vsplat`) and motion clips (`.glb`) |
-| `web/` | Stage page: PlayCanvas + splat-engine, room, orbit camera (bundled with esbuild, worker inlined) |
+| `web/src/` | Stage page: PlayCanvas + splat-engine — `stage` (wiring), `room`, `camera`, `blink`, `perf` (bundled with esbuild, worker inlined) |
 | `App/Veplika/` | Swift sources: `Models`, `Services`, `Stage` (WKWebView bridge), `Views` |
 | `scripts/sync_web.sh` | Builds the stage and copies assets into the app bundle folder |
 

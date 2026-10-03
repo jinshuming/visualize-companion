@@ -15,7 +15,7 @@ const patchWorker = {
   },
 };
 await build({
-  entryPoints: ['stage.js'], bundle: true, minify: true, format: 'iife',
+  entryPoints: ['src/stage.js'], bundle: true, minify: true, format: 'iife',
   target: 'safari16', outfile: 'dist/stage.bundle.js', plugins: [patchWorker, {
     name: 'nonode',
     setup(b) {

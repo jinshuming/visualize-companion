@@ -237,7 +237,6 @@ final class OnboardingStore {
             Bilingual("Tuning expressions and voice…", "正在调校表情与声音…"),
             Bilingual("Almost ready…", "马上就好…"),
         ]
-        debugLog("generate answers=\(answers) candidates=\(candidates.map(\.id))")
         if let first = candidates.first { chat.select(first) }
         for (i, stage) in stages.enumerated() {
             stageText = stage.text
@@ -255,12 +254,10 @@ final class OnboardingStore {
     func regenerate(chat: ChatStore) {
         guard candidates.count > 1 else { return }
         pick = (pick + 1) % candidates.count
-        debugLog("regenerate pick=\(pick)")
         if let c = result { chat.select(c); draftName = c.baseName }
     }
 
     func finish(chat: ChatStore) {
-        debugLog("finish result=\(result?.id ?? "nil") chat=\(chat.companion.id) pick=\(pick)")
         if let c = result {
             if chat.companion.id != c.id { chat.select(c) }
             chat.rename(draftName)
@@ -285,15 +282,3 @@ final class OnboardingStore {
         try? data.write(to: dir.appendingPathComponent("reference.jpg"), options: .atomic)
     }
 }
-
-#if DEBUG
-/// Appends to Documents/debug.log so flows driven from a host script can be inspected afterwards.
-func debugLog(_ line: String) {
-    let url = URL.documentsDirectory.appendingPathComponent("debug.log")
-    let text = "\(Date().formatted(date: .omitted, time: .standard)) \(line)\n"
-    if let h = try? FileHandle(forWritingTo: url) { h.seekToEndOfFile(); h.write(Data(text.utf8)); try? h.close() }
-    else { try? text.write(to: url, atomically: true, encoding: .utf8) }
-}
-#else
-@inline(__always) func debugLog(_ line: String) {}
-#endif

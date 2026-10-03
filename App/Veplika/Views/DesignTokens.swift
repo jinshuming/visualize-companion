@@ -60,7 +60,6 @@ enum DS {
         static let hangUp = Pastel.coral
         static let onHangUp = Color(hex: 0x6B2F2A)
         static let alert = Pastel.coral
-        static let online = Color(hex: 0xA8DFC4)
 
         /// Onboarding surfaces (light pastel aurora).
         static let auroraTop = Color(hex: 0xE4E0F7)
@@ -71,7 +70,7 @@ enum DS {
     /// Tokens checked by `audit()`. Ink is exempt because it is text, not a fill.
     private static let audited: [(String, UInt32)] = [
         ("wall", 0xC9C4D0), ("brand", 0xAEB8F0), ("userBubble", 0xCBD2F6), ("companionBubble", 0xFDFCFF),
-        ("glassTint", 0xB4B2C6), ("glassTintStrong", 0x8E8CA6), ("hangUp", 0xF3AEA2), ("online", 0xA8DFC4),
+        ("glassTint", 0xB4B2C6), ("glassTintStrong", 0x8E8CA6), ("hangUp", 0xF3AEA2),
         ("mint", 0xA8E0D2), ("sky", 0xBCD6F2), ("peach", 0xF5CDB8), ("butter", 0xF4E2B0), ("rose", 0xF0C0CC),
         ("lilac", 0xD8B9F0), ("auroraTop", 0xE4E0F7), ("auroraMid", 0xD3E3F8), ("auroraLow", 0xF7DDE4),
     ]
@@ -97,7 +96,6 @@ enum DS {
     enum Size {
         static let topButton: CGFloat = 38          // 80 px circle
         static let namePillHeight: CGFloat = 36     // 78 px
-        static let topBarInset: CGFloat = 8         // gap below the safe area
         static let sideMargin: CGFloat = 20
         static let inputHeight: CGFloat = 50        // 118 px
         static let plusButton: CGFloat = 46         // 105 px
@@ -190,5 +188,17 @@ struct NamePill: View {
         }
         .buttonStyle(.plain)
         .frosted(.capsule, interactive: action != nil)
+    }
+}
+
+/// Brand wordmark that sits in the status-bar band, centred (the reference shows its logo here).
+struct Wordmark: View {
+    var body: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "leaf.fill").font(.system(size: 15, weight: .bold))
+            Text("Veplika").font(DS.Typeface.wordmark)
+        }
+        .foregroundStyle(.white.opacity(0.95))
+        .shadow(color: .black.opacity(0.12), radius: 4)
     }
 }

@@ -4,10 +4,11 @@ struct CompanionPickerView: View {
     @Environment(ChatStore.self) private var store
     let onPicked: () -> Void
     @State private var focusID: String?
+    private var pickerCompanion: Companion { Companion.find(focusID ?? store.companion.id) }
 
     var body: some View {
         ZStack {
-            Backdrop(companion: Companion.find(focusID ?? store.companion.id))
+            Backdrop(top: pickerCompanion.secondary.opacity(0.8), mid: pickerCompanion.accent.opacity(0.6), low: pickerCompanion.secondary.opacity(0.7))
                 .animation(.smooth(duration: 0.6), value: focusID)
             VStack(alignment: .leading, spacing: 8) {
                 Text(L.t("Choose your companion", "选择你的伙伴")).font(.largeTitle.bold()).foregroundStyle(DS.Palette.ink).padding(.horizontal, 24).padding(.top, 24)

@@ -13,7 +13,7 @@ struct OnboardingFlow: View {
     var body: some View {
         ZStack {
             if ob.step != .reveal {
-                AuroraBackdrop().transition(.opacity)
+                Backdrop().transition(.opacity)
             }
             Group {
                 switch ob.step {
@@ -35,27 +35,6 @@ struct OnboardingFlow: View {
         .onChange(of: ob.step) { _, s in
             if s == .reveal { avatar.setMode("space") }
         }
-    }
-}
-
-// MARK: - Backdrop
-
-/// Slowly drifting pastel mesh: lavender, mist blue and blush.
-struct AuroraBackdrop: View {
-    var body: some View {
-        TimelineView(.animation(minimumInterval: 1 / 20)) { ctx in
-            let t = Float(ctx.date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 600))
-            MeshGradient(width: 3, height: 3, points: [
-                [0, 0], [0.5, 0], [1, 0],
-                [0, 0.5], [0.5 + 0.14 * sin(t * 0.35), 0.5 + 0.12 * cos(t * 0.28)], [1, 0.5],
-                [0, 1], [0.5, 1], [1, 1],
-            ], colors: [
-                DS.Palette.auroraTop, DS.Palette.auroraMid, DS.Palette.auroraLow,
-                DS.Palette.auroraMid, .white, DS.Palette.auroraTop,
-                DS.Palette.auroraLow, DS.Palette.auroraTop, DS.Palette.auroraMid,
-            ])
-        }
-        .ignoresSafeArea()
     }
 }
 

@@ -238,11 +238,13 @@ app used to cut every gesture at 2.4 s, so the nod never reached its peak. Gestu
 - `App/Veplika/` (SwiftUI): `Models` (Companion, Localization, Onboarding), `Services` (ChatEngine protocol + mock,
   ChatStore, CallSession, SpeechService), `Stage` (WKWebView bridge + custom `veplika://` scheme handler),
   `Views` (RootView, Chat/Space/Call layers, Onboarding, DesignTokens).
-- `web/stage.js` bundles PlayCanvas + splat-engine (worker inlined) into one file. It builds the room, owns the orbit
-  camera presets (`chat`, `space`, `call`), plays clips, picks the WebGL backend, adapts resolution, and exposes a perf probe.
+- `web/src/` bundles PlayCanvas + splat-engine (worker inlined) into one file. `stage.js` wires the parts, picks the WebGL
+  backend, owns the character and clips and exposes `window.stage`; `room.js` builds the themed room; `camera.js` is the
+  orbit rig (`chat`, `space`, `call`); `blink.js` is idle blinking; `perf.js` is adaptive resolution, the perf probe and
+  the diagnostics badge. The Swift side talks to it only through `AvatarController`.
 - `Resources/` holds `.vsplat` characters and `.glb` motions. `scripts/sync_web.sh` builds and copies them into the app.
-- Debug launch arguments: `-seedDemo`, `-perfProbe`, `-resetOnboarding`, `-onboardingAuto`, `-skipOnboarding`,
-  `-thumbCapture` (+ `-companion <id>`). Settings has a "Show render diagnostics" toggle.
+- Debug launch arguments (scripted runs live in `Stage/DebugHarness.swift`): `-seedDemo`, `-perfProbe`, `-resetOnboarding`,
+  `-onboardingAuto`, `-skipOnboarding`, `-thumbCapture` (+ `-companion <id>`). Settings has a "Show render diagnostics" toggle.
 
 ---
 
@@ -311,6 +313,9 @@ app used to cut every gesture at 2.4 s, so the nod never reached its peak. Gestu
 
 ## 10. Changelog of this document
 
+- 2026-10-03 — Simplification pass: no behaviour change. Stopped tracking `App/build-device/` (2.7k build files), split
+  `web/stage.js` into modules, removed the facial-bone/blink/dark-splat experiment code (findings stay in R4/R5), merged the
+  two mesh backdrops, folded `Companion`'s side tables into the struct, moved debug runners out of `RootView`.
 - 2026-10-03 — Added idle blinking under R5 with the eyelid-bone experiment results.
 - 2026-10-03 — R4 upgraded to Partially verified (facial bones are weighted); added splat data model, the under-chin
   shadow investigation, and the gesture-timing finding.

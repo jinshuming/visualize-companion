@@ -65,63 +65,7 @@ struct RootView: View {
             }
         }
         #if DEBUG
-        .task {
-            // Capture a transparent character thumbnail: `-thumbCapture -companion <id> -thumbDist 4.9 -thumbTy 0.95`.
-            // Alternates white/black backgrounds (animation frozen) and publishes the state for the host script.
-            guard thumbMode else { return }
-            while avatar.status != .loaded { try? await Task.sleep(for: .milliseconds(200)) }
-            try? await Task.sleep(for: .seconds(1.5))
-            let dist = UserDefaults.standard.double(forKey: "thumbDist")
-            let ty = UserDefaults.standard.double(forKey: "thumbTy")
-            avatar.thumbPrep(dist: dist > 0 ? dist : 4.9, ty: ty != 0 ? ty : 0.95)
-            let state = URL.documentsDirectory.appendingPathComponent("thumb-state.txt")
-            for (name, hex) in [("white", "#ffffff"), ("black", "#000000")] {
-                avatar.setClear(hex)
-                try? await Task.sleep(for: .seconds(1.2))
-                try? name.write(to: state, atomically: true, encoding: .utf8)
-                try? await Task.sleep(for: .seconds(3))
-            }
-            try? "done".write(to: state, atomically: true, encoding: .utf8)
-        }
-        .task {
-            // `-debugClip nod -debugMs 700 -debugMode call`: freeze a clip mid-way for pose inspection.
-            guard let clip = UserDefaults.standard.string(forKey: "debugClip") else { return }
-            while avatar.status != .loaded { try? await Task.sleep(for: .milliseconds(200)) }
-            try? await Task.sleep(for: .seconds(1.5))
-            avatar.setMode(UserDefaults.standard.string(forKey: "debugMode") ?? "call")
-            try? await Task.sleep(for: .seconds(1.5))
-            if UserDefaults.standard.object(forKey: "debugBlink") != nil { avatar.blinkExperiment(UserDefaults.standard.double(forKey: "debugBlink")) }
-            if let m = UserDefaults.standard.string(forKey: "debugFace") {
-                avatar.faceExperiment(m, UserDefaults.standard.string(forKey: "debugAxis") ?? "x", UserDefaults.standard.double(forKey: "debugAmount"))
-            }
-            if UserDefaults.standard.bool(forKey: "debugHideDark") { avatar.darkFilter(true) }
-            avatar.debugPose(clip, ms: UserDefaults.standard.integer(forKey: "debugMs"))
-        }
-        .task {
-            // `-onboardingAuto`: fill answers + sample photo, generate, then finish. For scripted checks.
-            guard ProcessInfo.processInfo.arguments.contains("-onboardingAuto") else { return }
-            while avatar.status != .ready && avatar.status != .loaded { try? await Task.sleep(for: .milliseconds(200)) }
-            onboarding.answers = ["you": "female", "partner": "female", "personality": "gentle", "style": "sweet", "together": "talk",
-                                  "visual": "cartoon"]
-            onboarding.music = ["lofi", "pop"]
-            onboarding.photo = Companion.all.first?.thumbnail
-            await onboarding.generate(chat: store)
-            try? await Task.sleep(for: .seconds(2))
-            debugLog("auto: before finish store=\(store.companion.id) result=\(onboarding.result?.id ?? "nil")")
-            onboarding.finish(chat: store)
-            try? await Task.sleep(for: .seconds(1))
-            debugLog("auto: after finish store=\(store.companion.id) name=\(store.companion.name)")
-        }
-        .task {
-            guard ProcessInfo.processInfo.arguments.contains("-perfProbe") else { return }
-            while avatar.status != .loaded { try? await Task.sleep(for: .milliseconds(200)) }
-            try? await Task.sleep(for: .seconds(2))
-            if let json = await avatar.runPerfProbe() {
-                let url = URL.documentsDirectory.appendingPathComponent("perf.json")
-                try? json.write(to: url, atomically: true, encoding: .utf8)
-                print("PERF_PROBE_DONE \(url.path)")
-            }
-        }
+        .task { await DebugHarness.run(avatar: avatar, store: store, onboarding: onboarding) }
         #endif
         .onChange(of: mode) { _, m in avatar.setMode(m.stageName) }
         .onChange(of: store.companion) { _, new in avatar.show(new) }
