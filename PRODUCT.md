@@ -87,8 +87,8 @@ in a room → voice call with face close-up.**
   stickers and pop a floating note; a pastel equalizer "vibe meter" dances harder as more genres are picked; a
   reaction line answers each pick; "Shuffle for me" picks three at random; haptics on select. At least one required.
 - **Visual-style step:** Realistic / Stylized CG / Cartoon cards, previewed with matching library characters.
-  The library has **no stylized-CG character yet**, so that card shows a symbol and the matcher falls back to traits.
-  Current mapping: `realistic` = Chloe, Jolene, Sam; `cartoon` = the chibi characters.
+  Current mapping: `realistic` = Chloe, Jolene, Sam; `stylized` = Gwen (added 2026-10-04, 3D-film look, human
+  proportions); `cartoon` = the chibi characters. The Stylized card still shows a symbol, not Gwen's art.
 - The mock matcher ranks visual-style match first, then personality/look/activity/**music** overlap (genre tags in
   `Companion.tagTable`). Choices are saved to `UserDefaults` (`pref.musicGenres`, `pref.visualStyle`) for the future
   chat brain (R10) and real generation (R1).
