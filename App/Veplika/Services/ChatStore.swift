@@ -87,6 +87,13 @@ final class ChatStore {
         }
     }
 
+    /// Log a line spoken during a real-time call; the call itself produced the reply, so no engine round-trip.
+    func record(_ role: ChatMessage.Role, _ text: String) {
+        messages.append(ChatMessage(role: role, text: text))
+        xp += role == .user ? 2 : 3
+        save()
+    }
+
     /// If the chat is still just the opening line, restate it in the newly chosen language.
     func languageChanged() {
         if messages.count == 1, messages[0].role == .companion { seedGreeting(); save() }

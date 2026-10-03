@@ -219,6 +219,53 @@ in a room → voice call with face close-up.**
   per-character voice and on Claude-quality persona/structured output.
 - **Needs from the owner:** a backend to host the agent, per-minute budget, cascaded vs speech-to-speech decision after
   a listening test, vendor choice for Chinese and English. Lip-sync is gated on the R4 facial-bone experiment.
+- **First attempt chosen by the owner (2026-10-04): Doubao Seeduplex 3.0** (豆包实时语音模型 3.0, full-duplex
+  speech-to-speech). Facts from the official docs (updated 2026-09-28) and the vendor demos in `doubao-real-time-demo/`:
+  `wss://openspeech.bytedance.com/api/v3/duplex/realtime/dialogue`, header `X-Api-Key`, JSON text frames with
+  OpenAI-Realtime-style events, `session.model = "1.2.6.1"`. Input PCM 16 kHz mono int16 in 20 ms frames (640 B, Base64),
+  paced at real time (too fast or too slow is an error); the mic stream must keep flowing (or send
+  `input_audio_mute.commit`). Output 24 kHz `pcm` / `pcm_s16le` / `ogg_opus` (default). `instructions` + context ≤ 12K
+  tokens; server keeps the last 20 turns per `session.id`. Barge-in signal:
+  `conversation.item.input_audio_transcription.started`; manual cancel: `response.cancel`. Also: function calling,
+  `enable_proactive_speak`, exit-intent detection, voice cloning (paid slots, Chinese only). Limits: 60 sessions/min,
+  100k tokens/min per AppID, 10 min of silence ends the session; always `session.close` before closing the socket.
+- **MVP built (2026-10-04) — works in the simulator, Unverified on device.** Owner chose: backend on the owner's Mac,
+  Go, simplest MVP. `relay/` (Go) holds the key in the gitignored `relay/.env`, passes JSON frames both ways and closes
+  sessions gracefully; `go run . -probe file.wav` tests the key and protocol without the app. iOS: `RealtimeCall` +
+  `DuplexAudio` (voice-processing AEC engine, 20 ms paced uplink, streamed `pcm_s16le` playback, barge-in on
+  `transcription.started`, transcripts logged into the chat, one `session.id` per companion). `CallSession` uses it when a
+  relay address is set (Settings › Real-time call server; the simulator defaults to `ws://127.0.0.1:8787/realtime`) and
+  falls back to the Apple loop if it fails. (The first 403 `45000030 requested resource not granted` went away once the
+  owner enabled the service in the console.)
+- **Verified 2026-10-04:** the probe round-trips with Doubao (Chinese sample question → correct transcript → spoken reply);
+  **first reply audio ≈ 1.5 s after the user stops speaking** (target ≤ 1 s; includes Doubao's end-of-turn wait).
+  In the simulator: call connects, greeting is generated, uplink holds exactly 50 frames/s with the mic at 100 % of real
+  time, hang-up closes the session cleanly. **Not yet verified:** a spoken exchange through the app, playback quality,
+  barge-in, echo cancellation and loudspeaker on the iPhone, English.
+- **Found while testing:** the transcript arrives in `text`, not `transcript` as the docs say; each
+  `transcription.delta` carries the whole partial sentence so far (replace, don't append); uplink must follow a fixed
+  20 ms clock (the mic delivers ~100 ms chunks, so a 40 ms jitter buffer smooths them); Apple's voice-processing unit
+  delivers no mic input in the iOS Simulator, so the simulator runs without echo cancellation (use headphones there).
+- **Session options enabled by the owner (2026-10-04), each verified against the live API with spoken test questions:**
+  `enable_user_query_exit` (a goodbye returns `status_code 20000002`; the app hangs up after her goodbye plays),
+  `enable_music`, `enable_asr_twopass` + the companion's name as a hotword, `tools` (`do_gesture` → avatar clips,
+  `change_background`), and `dialog_context` (the last ≤12 chat turns, ≤3000 chars — she recalled a fact from it).
+  The chat history on the device is now the single memory: text chat and call transcripts both feed it, and the
+  per-companion server `session.id` was dropped. **Cost:** a tool call adds ~1.5 s before she answers (3.2 s vs 1.6 s),
+  so tools are limited to explicit requests; two-pass ASR may add ~0.1–0.3 s.
+- **Owner's first simulator call (2026-10-04):** Doubao understood mixed Chinese/English and answered quickly, sang on
+  request, and kept English as instructed even when asked in Chinese. But without echo cancellation her voice looped back
+  through the Mac mic and was answered as the user's words. Fix: in the simulator only, the mic is closed while she speaks
+  (+300 ms), so no barge-in there; the device keeps full duplex. Open question for the owner: should she answer in the
+  language the user speaks instead of the app language?
+- **Plan:** (0) owner listening test with the vendor web demo; (1) dev relay that holds the key + iOS client with
+  voice-processing AEC and barge-in, verified on the iPhone; (2) link to the avatar — listening/speaking gaze, audio-energy
+  mouth, emotion from reply text; (3) production relay with per-user short-lived auth, reconnects, privacy consent.
+- **Known gaps against the bar (Unverified until tested):** English voice quality and availability on 3.0 (the demo only
+  lists Chinese voices — conflicts with English-first P7); only ~5 stock voices, so per-character voices need paid
+  clones; the brain is Doubao, not Claude (R10), and gives no structured emotion/gesture output; user audio goes to
+  ByteDance servers (needs a consent line); price per minute not yet checked. The docs say input `rate` while the demo
+  sends `sample_rate` — check which the server accepts.
 
 ### R10 — Chat brain
 - **Status: Mock** (`MockChatEngine`, persona-flavoured canned lines, EN+ZH). **Planned:** Claude API behind the
@@ -285,6 +332,7 @@ app used to cut every gesture at 2.4 s, so the nod never reached its peak. Gestu
   backend, owns the character and clips and exposes `window.stage`; `room.js` builds the themed room; `camera.js` is the
   orbit rig (`chat`, `space`, `call`); `blink.js` is idle blinking; `perf.js` is adaptive resolution, the perf probe and
   the diagnostics badge. The Swift side talks to it only through `AvatarController`.
+- `relay/` (Go) is the dev backend for real-time calls: `cd relay && go run .` (key in `relay/.env`, never committed).
 - `Resources/` holds `.vsplat` characters and `.glb` motions. `scripts/sync_web.sh` builds and copies them into the app.
 - Debug launch arguments (scripted runs live in `Stage/DebugHarness.swift`): `-seedDemo`, `-perfProbe`, `-resetOnboarding`,
   `-onboardingAuto`, `-skipOnboarding`, `-thumbCapture` (+ `-companion <id>`). Settings has a "Show render diagnostics" toggle.
@@ -353,12 +401,14 @@ app used to cut every gesture at 2.4 s, so the nod never reached its peak. Gestu
 | 2026-10-03 | Blink by recolouring eye splats (lid sweep + lash line) rather than by moving eyelid bones. | Experiment results |
 | 2026-10-03 | Gesture playback length follows each clip's real duration (nod no longer cut at 2.4 s). | Debugging |
 | 2026-10-01 | Skip TestFlight for now. Do not upload to the company Apple team without explicit approval. | Owner |
+| 2026-10-04 | Real-time call: try Doubao Seeduplex 3.0 (full-duplex speech-to-speech) first. | Owner |
 | 2026-10-02 | Onboarding asks for favourite music genres (fun, light multi-select) and, as the last choice, the partner's visual style: realistic / CG stylized / cartoon. | Owner |
 
 ---
 
 ## 10. Changelog of this document
 
+- 2026-10-04 — R9a: owner chose Doubao Seeduplex 3.0 as the first attempt; recorded API facts, plan and gaps.
 - 2026-10-04 — Added R9a (real-time, human-like voice in the video call) with the proposed architecture.
 - 2026-10-03 — Simplification pass: no behaviour change. Stopped tracking `App/build-device/` (2.7k build files), split
   `web/stage.js` into modules, removed the facial-bone/blink/dark-splat experiment code (findings stay in R4/R5), merged the

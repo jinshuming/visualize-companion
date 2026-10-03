@@ -7,6 +7,7 @@ struct SettingsView: View {
     @Environment(AvatarController.self) private var avatar
     @Environment(OnboardingStore.self) private var onboarding
     @AppStorage("diagnostics") private var diagnostics = false
+    @AppStorage("relayURL") private var relayURL = ""
     @State private var confirmClear = false
 
     var body: some View {
@@ -25,6 +26,17 @@ struct SettingsView: View {
                 Section(L.t("Voice", "语音")) {
                     Toggle(L.t("Read replies aloud", "朗读伙伴的回复"), isOn: $store.speaksReplies)
                         .onChange(of: store.speaksReplies) { _, on in if !on { speech.stopSpeaking() } }
+                }
+                Section {
+                    TextField("ws://192.168.x.x:8787/realtime", text: $relayURL)
+                        .keyboardType(.URL)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                } header: {
+                    Text(L.t("Real-time call server", "实时通话服务器"))
+                } footer: {
+                    Text(L.t("Development: the address printed by the relay on your Mac. Leave empty to use on-device speech.",
+                             "开发用：填 Mac 上中转服务打印的地址。留空则使用本机语音。"))
                 }
                 Section(L.t("Relationship", "关系")) {
                     LabeledContent(L.t("Companion", "当前伙伴"), value: store.companion.name)

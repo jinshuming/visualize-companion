@@ -1,7 +1,8 @@
 import Foundation
 import Observation
 
-/// Hands-free voice call: listen → (silence) → send → companion thinks → speaks → listen again.
+/// Voice call. With a relay available it is a full-duplex Doubao call (`RealtimeCall`, R9a); otherwise, or if
+/// that fails, the hands-free Apple loop: listen → (silence) → send → companion thinks → speaks → listen again.
 @MainActor
 @Observable
 final class CallSession {
@@ -14,10 +15,13 @@ final class CallSession {
     }
     private(set) var seconds = 0
     private(set) var isActive = false
-    var muted = false
+    var muted = false { didSet { realtime?.muted = muted } }
     var loudspeaker = true
     /// Live partial transcript of what the user is saying.
-    var heard: String { speech?.transcript ?? "" }
+    var heard: String { realtime?.heard ?? speech?.transcript ?? "" }
+    private var realtime: RealtimeCall?
+    /// Set by the view: the companion ended the call because the user said goodbye.
+    var onHangUp: (() -> Void)?
 
     private weak var speech: SpeechService?
     private var loop: Task<Void, Never>?
@@ -52,6 +56,67 @@ final class CallSession {
             }
         }
 
+        if let url = RealtimeCall.relayURL {
+            startRealtime(url: url, store: store, speech: speech, avatar: avatar)
+        } else {
+            startLoop(store: store, speech: speech, avatar: avatar)
+        }
+    }
+
+    private func startRealtime(url: URL, store: ChatStore, speech: SpeechService, avatar: AvatarController) {
+        let call = RealtimeCall(companion: store.companion, history: store.messages)
+        call.muted = muted
+        call.onLive = { [weak self] in
+            guard let self else { return }
+            speech.setLoudspeaker(loudspeaker)
+            avatar.play(.wave)
+            phase = .listening
+        }
+        call.onUserSaid = { [weak self] text in
+            store.record(.user, text)
+            self?.phase = .thinking
+        }
+        call.onSpeakingChanged = { [weak self] speaking in self?.phase = speaking ? .speaking : .listening }
+        call.onCompanionSaid = { store.record(.companion, $0) }
+        call.onHangUp = { [weak self] in self?.onHangUp?() }
+        call.onTool = { name, args in Self.runTool(name, args, avatar: avatar) }
+        call.onFailed = { [weak self] in
+            // Keep the call going on the on-device loop rather than dropping it.
+            guard let self, isActive else { return }
+            realtime = nil
+            startLoop(store: store, speech: speech, avatar: avatar)
+        }
+        realtime = call
+        call.start(url: url)
+    }
+
+    /// Tools the real-time model may call (declared in `RealtimeCall.tools`).
+    private static func runTool(_ name: String, _ args: String, avatar: AvatarController) -> String {
+        switch name {
+        case "do_gesture":
+            let json = (try? JSONSerialization.jsonObject(with: Data(args.utf8))) as? [String: Any]
+            switch json?["gesture"] as? String {
+            case "wave": avatar.play(.wave)
+            case "nod": avatar.play(.nod)
+            case "clap": avatar.play(.clap)
+            case "cheer": avatar.play(.cheer)
+            case "heart": avatar.react("warm")
+            case "laugh": avatar.react("laugh")
+            case "shy": avatar.react("shy")
+            case "think": avatar.react("think")
+            case "shrug": avatar.react("doubt")
+            default: return #"{"ok":false,"error":"unknown gesture"}"#
+            }
+            return #"{"ok":true}"#
+        case "change_background":
+            avatar.nextTheme()
+            return #"{"ok":true}"#
+        default:
+            return #"{"ok":false,"error":"unknown tool"}"#
+        }
+    }
+
+    private func startLoop(store: ChatStore, speech: SpeechService, avatar: AvatarController) {
         loop = Task { [weak self] in
             guard let self else { return }
             try? await Task.sleep(for: .milliseconds(900))
@@ -91,6 +156,8 @@ final class CallSession {
     }
 
     func end(speech: SpeechService? = nil) {
+        realtime?.end()
+        realtime = nil
         loop?.cancel(); clock?.cancel()
         loop = nil; clock = nil
         let s = speech ?? self.speech

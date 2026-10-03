@@ -157,6 +157,7 @@ struct RootView: View {
         focused = false
         speech.stopSpeaking()
         withAnimation(DS.Motion.glide) { mode = .call }
+        call.onHangUp = { endCall() }
         call.start(store: store, speech: speech, avatar: avatar)
     }
 
